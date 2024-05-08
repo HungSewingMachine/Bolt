@@ -37,6 +37,10 @@ public class SavedData
 public class HexaTool : MonoBehaviour
 {
 #if UNITY_EDITOR
+
+    public const float X = 0.5f;          // Kc tam -> edge 
+    public const float Z = -0.58f / 2;    // kc tam -> vertex /2
+    
     public List<Vector2> index; 
     public GameObject    prefab;
     public string        fileName;
@@ -181,8 +185,9 @@ public class HexaTool : MonoBehaviour
     {
         var offset = 0.1f;
         // int col = (int)((pos.z - offset) / -0.87);
-        int col = Mathf.FloorToInt((pos.z - offset) / -0.87f);
-        var rowResult = (pos.x + (col%2 == 0 ? 0 : -0.5f) + offset) / 0.5f;
+        int col = Mathf.FloorToInt((pos.z - offset) / Z);
+        var rowResult = (pos.x + (col%2 == 0 ? 0 : -X) + offset) / X;
+        // var rowResult = (pos.x + offset) / X;
         int row = Mathf.FloorToInt(rowResult);
         return (row, col);
     }
@@ -194,8 +199,8 @@ public class HexaTool : MonoBehaviour
     /// <returns></returns>
     public static Vector3 GetPosition(Grid grid, Vector3 offset)
     {
-        var offsetX = Mathf.Approximately(grid.y % 2, 1) ? 0.5f : 0;
-        return new Vector3(grid.x * 0.5f + offsetX, 0, grid.y * -0.87f) + offset;
+        var offsetX = Mathf.Approximately(grid.y % 2, 1) ? X : 0;
+        return new Vector3(grid.x * X + offsetX, 0, grid.y * Z) + offset;
     }
 #endif
 
