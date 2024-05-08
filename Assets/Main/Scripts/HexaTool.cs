@@ -44,7 +44,7 @@ public class HexaTool : MonoBehaviour
 #if UNITY_EDITOR
 
     public const float X = 0.5f;       // Kc tam -> edge 
-    public const float Y = 0.2f;       // Chieu day
+    public const float Y = 0.4f;       // Chieu day
     public const float Z = -0.58f / 2; // kc tam -> vertex /2
 
     public List<Vector2> index;
@@ -93,23 +93,22 @@ public class HexaTool : MonoBehaviour
             {
                 // Output the Transform with smallest X and largest Z
                 Debug.Log("Transform with smallest X and largest Z: " + minMaxChildTransform.name);
+                var offsetPos = minMaxChildTransform.position;
+                // Offset all
+                var listPosition = new List<Vector3>();
+                foreach (Transform childTransform in parentTransform)
+                {
+                    listPosition.Add(childTransform.position - offsetPos);
+                }
+
+                //Print(parentTransform);
+                var data = CalculateSaveData(listPosition, offsetPos);
+                JsonHandler.WriteAsset(data, fileName);
             }
             else
             {
                 Debug.LogWarning("No child Transform found with smallest X and largest Z.");
             }
-
-            var offsetPos = minMaxChildTransform.position;
-            // Offset all
-            var listPosition = new List<Vector3>();
-            foreach (Transform childTransform in parentTransform)
-            {
-                listPosition.Add(childTransform.position - offsetPos);
-            }
-
-            //Print(parentTransform);
-            var data = CalculateSaveData(listPosition, offsetPos);
-            JsonHandler.WriteAsset(data, fileName);
         }
         else
         {
