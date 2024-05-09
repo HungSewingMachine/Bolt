@@ -20,25 +20,33 @@ namespace Main.Scripts.Entity
         
         private const float MAX_CHECK_DISTANCE = 0.2f;
 
+        private const int HEXAGON_LAYER = 1 << 7;
+
         private Vector3 GetStartOriginPoint(Transform t)
         {
-            return t.position + height * Vector3.up;
+            return t.position;
         }
         
         public void CheckMovable()
         {
-            if (isAvailable) return;
+            // Debug.Log($"RedFlag check movable!");
+            // if (isAvailable) return;
+            Debug.Log($"RedFlag check movable2!");
 
-            foreach (var vertex in checkVertexes)
+            foreach (var angle in angles)  
             {
-                if (Physics.Raycast(vertex, Vector3.up, MAX_CHECK_DISTANCE, 1 << 7))
+                var checkPoint = GetPositionFromAngle(transform, angle - Mathf.PI / 6);
+                Debug.Log($"RedFlag check point {checkPoint}!");
+                if (Physics.Raycast(checkPoint, Vector3.up, 10, HEXAGON_LAYER))
                 {
-                    isAvailable = true;
+                    isAvailable = false;
                     LogInfo();
-                    // Turn on anim, ...
                     return;
                 }
             }
+
+            // Turn on anim, ...
+            isAvailable = true;
         }
 
         private Vector3 GetPositionFromAngle(Transform t, float angle)
@@ -49,15 +57,18 @@ namespace Main.Scripts.Entity
 
         public virtual void LogInfo()
         {
-            Debug.Log($"RedFlag Detect Available");
+            Debug.Log($"RedFlag Detect False");
         }
 
         private void OnDrawGizmos()
         {
+            if (isAvailable) return;
             Gizmos.color = Color.red;
             for (int i = 0; i < angles.Length; i++)
             {
-                Gizmos.DrawSphere(GetPositionFromAngle(transform, angles[i] - Mathf.PI / 6),0.01f);
+                var checkPoint = GetPositionFromAngle(transform, angles[i] - Mathf.PI / 6);
+                Gizmos.DrawSphere(checkPoint,0.01f);
+                Gizmos.DrawLine(checkPoint, checkPoint + Vector3.up * MAX_CHECK_DISTANCE);
             }
         }
     }

@@ -42,24 +42,6 @@ public class SavedData
 public class HexaTool : MonoBehaviour
 {
 #if UNITY_EDITOR
-
-    public const float X = 0.5f;       // Kc tam -> edge 
-    public const float Y = 0.4f;       // Chieu day
-    public const float Z = -0.58f / 2; // kc tam -> vertex /2
-
-    public List<Vector2> index;
-    public GameObject    prefab;
-    public string        fileName;
-
-    private void Start()
-    {
-        var saveData = JsonHandler.GetLevelData(fileName);
-        for (int i = 0; i < saveData.gridIndex.Count; i++)
-        {
-            Instantiate(prefab, GetPosition(saveData.gridIndex[i], saveData.offset), Quaternion.identity);
-        }
-    }
-
     [MenuItem("Tools/ExportHexaData", false, 51)]
     public static void ExportHexaData()
     {
@@ -153,9 +135,9 @@ public class HexaTool : MonoBehaviour
     public static Grid GetIndex(Vector3 pos)
     {
         var offset = 0.1f;
-        var height = Mathf.FloorToInt(pos.y / Y);
-        int col = Mathf.FloorToInt((pos.z - offset) / Z);
-        var rowResult = (pos.x + (col % 2 == 0 ? 0 : -X) + offset) / X;
+        var height = Mathf.FloorToInt(pos.y / HexagonInfo.Y);
+        int col = Mathf.FloorToInt((pos.z - offset) / HexagonInfo.Z);
+        var rowResult = (pos.x + (col % 2 == 0 ? 0 : -HexagonInfo.X) + offset) / HexagonInfo.X;
         int row = Mathf.FloorToInt(rowResult);
         return new Grid()
         {
@@ -163,17 +145,6 @@ public class HexaTool : MonoBehaviour
             y = height,
             z = col
         };
-    }
-
-    /// <summary>
-    /// Convert from gridIndex to position
-    /// </summary>
-    /// <param name="grid"></param>
-    /// <returns></returns>
-    public static Vector3 GetPosition(Grid grid, Vector3 offset)
-    {
-        var offsetX = Mathf.Approximately(grid.z % 2, 1) ? X : 0;
-        return new Vector3(grid.x * X + offsetX, grid.y * Y, grid.z * Z) + offset;
     }
 #endif
 }

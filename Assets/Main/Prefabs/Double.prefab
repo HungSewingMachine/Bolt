@@ -44,6 +44,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: TestHexa (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 138840976248255209, guid: 8f0d9437a6e34a448a7016c25629ee01, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 460957737757811461, guid: 8f0d9437a6e34a448a7016c25629ee01, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
@@ -141,6 +145,7 @@ MonoBehaviour:
   - 3.1415927
   - 4.1887903
   - 5.2359877
+  isAvailable: 0
 --- !u!4 &5066283166438545231 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6621917254669801451, guid: 8f0d9437a6e34a448a7016c25629ee01, type: 3}
@@ -240,3 +245,31 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 6621917254669801451, guid: 8f0d9437a6e34a448a7016c25629ee01, type: 3}
   m_PrefabInstance: {fileID: 9164418973370420407}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &9134370563112025694 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 138840976248255209, guid: 8f0d9437a6e34a448a7016c25629ee01, type: 3}
+  m_PrefabInstance: {fileID: 9164418973370420407}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &205871718519554883
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9134370563112025694}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2e426dc80001324dbd91dcb8138c472, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  height: 0.15
+  radius: 0.5
+  checkVertexes: []
+  angles:
+  - 0
+  - 1.0471976
+  - 2.0943952
+  - 3.1415927
+  - 4.1887903
+  - 5.2359877
+  isAvailable: 0
