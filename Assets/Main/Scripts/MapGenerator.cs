@@ -1,32 +1,19 @@
-﻿using Main.Scripts.Entity;
+﻿using System.Collections.Generic;
+using Main.Scripts.Entity;
 using UnityEngine;
 
 namespace Main.Scripts
 {
     public class MapGenerator : MonoBehaviour
     {
-        public GameObject    prefab;
-        public string        fileName;
+        public HexBundle prefab;
 
-        public bool blockSpawn = false;
-
-        private void Start()
+        public void Generate(List<Grid> grids, Vector3 offset)
         {
-            if (!blockSpawn)
+            foreach (var grid in grids)
             {
-                var saveData = JsonHandler.GetLevelData(fileName);
-                for (int i = 0; i < saveData.gridIndex.Count; i++)
-                {
-                    Instantiate(prefab, GetPosition(saveData.gridIndex[i], saveData.offset), Quaternion.identity);
-                }
-            }
-            
-            // Testing
-
-            var hexagons = FindObjectsOfType<Hexagon>();
-            foreach (var hexagon in hexagons)
-            {
-                hexagon.CheckMovable();
+                var bundle = Instantiate(prefab, GetPosition(grid, offset), Quaternion.identity);
+                bundle.Initialize(grid);
             }
         }
 

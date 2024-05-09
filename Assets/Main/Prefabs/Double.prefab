@@ -9,6 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8907737253950114529}
+  - component: {fileID: 7961936646000013114}
   m_Layer: 0
   m_Name: Double
   m_TagString: Untagged
@@ -33,6 +34,20 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7961936646000013114
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4094355741709130947}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 052e948333c04d18a4fdabc6474dbee4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  top: {fileID: 8312510615195717654}
+  bottom: {fileID: 205871718519554883}
 --- !u!1001 &2137744286534582436
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -42,7 +57,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 138840976248255209, guid: 8f0d9437a6e34a448a7016c25629ee01, type: 3}
       propertyPath: m_Name
-      value: TestHexa (1)
+      value: HexaUp
       objectReference: {fileID: 0}
     - target: {fileID: 138840976248255209, guid: 8f0d9437a6e34a448a7016c25629ee01, type: 3}
       propertyPath: m_IsActive
@@ -118,6 +133,11 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: da262de97c973a84d9b4877e9c05c666, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8f0d9437a6e34a448a7016c25629ee01, type: 3}
+--- !u!23 &2003940777000330145 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 460957737757811461, guid: 8f0d9437a6e34a448a7016c25629ee01, type: 3}
+  m_PrefabInstance: {fileID: 2137744286534582436}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &2037747147386417741 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 138840976248255209, guid: 8f0d9437a6e34a448a7016c25629ee01, type: 3}
@@ -135,20 +155,31 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c2e426dc80001324dbd91dcb8138c472, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  testColor: {r: 0, g: 0, b: 0, a: 1}
+  renderers:
+  - {fileID: 7656548708863338604}
+  - {fileID: 8372910139006161435}
+  - {fileID: 2003940777000330145}
+  grid:
+    x: 0
+    y: 0
+    z: 0
   height: 0.15
   radius: 0.5
-  checkVertexes: []
-  angles:
-  - 0
-  - 1.0471976
-  - 2.0943952
-  - 3.1415927
-  - 4.1887903
-  - 5.2359877
   isAvailable: 0
 --- !u!4 &5066283166438545231 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6621917254669801451, guid: 8f0d9437a6e34a448a7016c25629ee01, type: 3}
+  m_PrefabInstance: {fileID: 2137744286534582436}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &7656548708863338604 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 8641085411575572680, guid: 8f0d9437a6e34a448a7016c25629ee01, type: 3}
+  m_PrefabInstance: {fileID: 2137744286534582436}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &8372910139006161435 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 7608909029510304447, guid: 8f0d9437a6e34a448a7016c25629ee01, type: 3}
   m_PrefabInstance: {fileID: 2137744286534582436}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &9164418973370420407
@@ -160,7 +191,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 138840976248255209, guid: 8f0d9437a6e34a448a7016c25629ee01, type: 3}
       propertyPath: m_Name
-      value: TestHexa
+      value: HexaDown
       objectReference: {fileID: 0}
     - target: {fileID: 138840976248255209, guid: 8f0d9437a6e34a448a7016c25629ee01, type: 3}
       propertyPath: m_Layer
@@ -240,9 +271,24 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: 9a32a6355da46d643b23894daa6192f4, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8f0d9437a6e34a448a7016c25629ee01, type: 3}
+--- !u!23 &632126717311165567 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 8641085411575572680, guid: 8f0d9437a6e34a448a7016c25629ee01, type: 3}
+  m_PrefabInstance: {fileID: 9164418973370420407}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &1636716458729889288 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 7608909029510304447, guid: 8f0d9437a6e34a448a7016c25629ee01, type: 3}
+  m_PrefabInstance: {fileID: 9164418973370420407}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &2651292146166373212 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6621917254669801451, guid: 8f0d9437a6e34a448a7016c25629ee01, type: 3}
+  m_PrefabInstance: {fileID: 9164418973370420407}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &8740123613557796786 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 460957737757811461, guid: 8f0d9437a6e34a448a7016c25629ee01, type: 3}
   m_PrefabInstance: {fileID: 9164418973370420407}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &9134370563112025694 stripped
@@ -262,14 +308,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c2e426dc80001324dbd91dcb8138c472, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  testColor: {r: 0, g: 0, b: 0, a: 1}
+  renderers:
+  - {fileID: 632126717311165567}
+  - {fileID: 1636716458729889288}
+  - {fileID: 8740123613557796786}
+  grid:
+    x: 0
+    y: 0
+    z: 0
   height: 0.15
   radius: 0.5
-  checkVertexes: []
-  angles:
-  - 0
-  - 1.0471976
-  - 2.0943952
-  - 3.1415927
-  - 4.1887903
-  - 5.2359877
   isAvailable: 0
