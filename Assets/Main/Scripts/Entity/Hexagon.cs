@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using DG.Tweening;
 using NaughtyAttributes;
 using UnityEngine;
 
@@ -90,7 +91,15 @@ namespace Main.Scripts.Entity
 
         public void PlayMoveAnimation(Vector3 target)
         {
-            Debug.Log($"RedFlag {grid} move to {target}");
+            const float duration = 1f;
+            Debug.Log($"RedFlag {grid} move to {target} with duration {duration}");
+
+            var sequence = DOTween.Sequence();
+
+            sequence.Append(transform.DOMove(target, duration));
+            sequence.Join(transform.DOLocalRotate(new Vector3(0, 360, 0), duration, RotateMode.FastBeyond360));
+
+            sequence.Play();
         }
 
 #if UNITY_EDITOR
