@@ -18,6 +18,11 @@ public struct Grid
         y = index.Item2;
         z = index.Item3;
     }
+
+    public override string ToString()
+    {
+        return $"X: {x}. Y: {y} Z: {z}";
+    }
 }
 
 [Serializable]

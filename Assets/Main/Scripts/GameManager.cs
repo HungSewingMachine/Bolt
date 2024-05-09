@@ -21,13 +21,14 @@ namespace Main.Scripts
         [SerializeField] private MapGenerator mapGenerator;
 
         public string fileName = "Level3";
+        public bool   allowSpawn = true;
 
         private Hexagon[] hexagons;
 
         private void Start()
         {
             var saveData = JsonHandler.GetLevelData(fileName);
-            mapGenerator.Generate(saveData.gridIndex, saveData.offset);
+            if (allowSpawn) mapGenerator.Generate(saveData.gridIndex, saveData.offset);
 
             hexagons = FindObjectsOfType<Hexagon>();
             foreach (var hexagon in hexagons)

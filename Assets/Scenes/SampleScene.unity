@@ -252,6 +252,7 @@ GameObject:
   m_Component:
   - component: {fileID: 149298816}
   - component: {fileID: 149298815}
+  - component: {fileID: 149298817}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -274,6 +275,7 @@ MonoBehaviour:
   sampleColors: 00000000010000000200000003000000
   mapGenerator: {fileID: 783180078}
   fileName: Level3
+  allowSpawn: 1
 --- !u!4 &149298816
 Transform:
   m_ObjectHideFlags: 0
@@ -289,6 +291,20 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &149298817
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 149298814}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 94a5be03450741bea8bfdcb83df8db8f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cooldownBetweenClick: 0.5
+  movePosition: {fileID: 0}
 --- !u!4 &196008798 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6621917254669801451, guid: 8f0d9437a6e34a448a7016c25629ee01, type: 3}
@@ -870,8 +886,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
-  m_LocalRotation: {x: 0.70710665, y: -0.000000003259629, z: 0.0000000021536835, w: 0.707107}
-  m_LocalPosition: {x: 2.5123112, y: 14.933679, z: -5.2900443}
+  m_LocalRotation: {x: 0.2652789, y: 0.0069735236, z: -0.0020095222, w: 0.9641444}
+  m_LocalPosition: {x: 1.71299, y: 5.6641827, z: -10.034145}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

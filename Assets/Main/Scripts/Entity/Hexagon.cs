@@ -69,12 +69,7 @@ namespace Main.Scripts.Entity
         {
             Debug.Log($"RedFlag Detect False");
         }
-
-        [Button]
-        public void TestChangeColor()
-        {
-            ChangeColor(testColor);
-        }
+        
         public void ChangeColor(Color color)
         {
             Debug.Log($"RedFlag color change! {color}");
@@ -93,7 +88,25 @@ namespace Main.Scripts.Entity
             Coordinate = grid;
         }
 
+        public void PlayMoveAnimation(Vector3 target)
+        {
+            Debug.Log($"RedFlag {grid} move to {target}");
+        }
+
 #if UNITY_EDITOR
+        
+        [Button]
+        public void TestMoveToDestination()
+        {
+            
+        }
+        
+        [Button]
+        public void TestChangeColor()
+        {
+            ChangeColor(testColor);
+        }
+        
         private void OnDrawGizmos()
         {
             if (isAvailable) return;
