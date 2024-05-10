@@ -96,11 +96,10 @@ namespace Main.Scripts.Entity
             {
                 UpdateLinePosition(() =>
                 {
-                    if (counter - 1 < 0) return;
-                    var previousColor = colors[counter - 1];
-                    waitingArea.OnGameColorChanged(previousColor);
+                    waitingArea.OnGameColorChanged(CurrentColor);
+                    IsTransitionBox = false;
                 });
-                IsTransitionBox = false;
+                
             },GameConstant.BOX_DELAY_TIME);
         }
 

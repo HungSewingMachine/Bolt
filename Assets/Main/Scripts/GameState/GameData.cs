@@ -23,11 +23,11 @@ namespace Main.Scripts.State
         /// </summary>
         /// <param name="hex"></param>
         /// <returns></returns>
-        public Vector3 RequestLanding(Hexagon hex)
+        public Vector3 RequestLanding(Hexagon hex, bool fromWaitLine)
         {
             var isColorMatch = hex.ElementColor == boxLine.CurrentColor;
             
-            if (isColorMatch && !boxLine.IsTransitionBox)
+            if (isColorMatch && (fromWaitLine || !boxLine.IsTransitionBox))
             {
                 var position = boxLine.AddToBoxLine(hex);
 

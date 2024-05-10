@@ -123,26 +123,19 @@ namespace Main.Scripts.Entity
             Coordinate = grid;
         }
 
-        public void FindTargetAndMove(bool forceMove = true)
+        public void FindTargetAndMove(bool fromWailLine = false)
         {
             if (!canMove) return;
 
-            var target = gameData.RequestLanding(this);
+            var target = gameData.RequestLanding(this, fromWailLine);
             Debug.Log($"RedFlag {grid} move to {target}");
 
-            if (forceMove)
+            const float duration = 1f;
+            Move(target, duration, () =>
             {
-                const float duration = 1f;
-                Move(target, duration, () =>
-                {
-                    if (parentBox != null)
-                        transform.SetParentAndReset(parentBox);
-                });
-            }
-            else
-            {
-                
-            }
+                if (parentBox != null)
+                    transform.SetParentAndReset(parentBox);
+            });
 
             TurnOffCollider();
             StartCoroutine(DelayCheckMove());
