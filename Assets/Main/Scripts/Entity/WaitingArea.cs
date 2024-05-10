@@ -68,6 +68,11 @@ namespace Main.Scripts.Entity
             var currentAvailableSlot = waitPositions[counter];
             waitList.Add(hex);
             counter++;
+            if (counter >= waitPositions.Length)
+            {
+                Debug.Log($"RedFlag game lose");
+                GameObject.FindObjectOfType<UIManager>().ShowLoseGame();
+            }
             return currentAvailableSlot;
         }
     }

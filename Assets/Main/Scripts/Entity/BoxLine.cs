@@ -71,6 +71,12 @@ namespace Main.Scripts.Entity
             var result = new Vector3(counter % boxCapacity, BOX_Y_POSITION, BOX_Z_POSITION);
             var currentBox = boxTransforms[counter / boxCapacity];
             counter += 1;
+            if (counter >= colors.Count)
+            {
+                Debug.Log($"RedFlag log game win!");
+                GameObject.FindObjectOfType<UIManager>().ShowWinGame();
+            }
+            
             hex.RegisterParent(currentBox);
             
             // Current game color depend on counter so if we want delay color change event we delay counter
