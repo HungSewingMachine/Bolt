@@ -140,9 +140,9 @@ public class HexaTool : MonoBehaviour
     public static Grid GetIndex(Vector3 pos)
     {
         var offset = 0.1f;
-        var height = Mathf.FloorToInt(pos.y / HexagonInfo.Y);
-        int col = Mathf.FloorToInt((pos.z - offset) / HexagonInfo.Z);
-        var rowResult = (pos.x + (col % 2 == 0 ? 0 : -HexagonInfo.X) + offset) / HexagonInfo.X;
+        var height = Mathf.FloorToInt(pos.y / GameConstant.Y);
+        int col = Mathf.FloorToInt((pos.z - offset) / GameConstant.Z);
+        var rowResult = (pos.x + (col % 2 == 0 ? 0 : -GameConstant.X) + offset) / GameConstant.X;
         int row = Mathf.FloorToInt(rowResult);
         return new Grid()
         {

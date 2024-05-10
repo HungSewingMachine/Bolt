@@ -1,16 +1,16 @@
+using System;
 using System.Collections;
-using System.Collections.Generic;
 using DG.Tweening;
 using Main.Scripts.State;
 using NaughtyAttributes;
+using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace Main.Scripts.Entity
 {
     public class Hexagon : MonoBehaviour
     {
-        [SerializeField] private GameState gameState;
+        [SerializeField] private GameData gameData;
 
         // === Only Test change color
         public Renderer[] renderers;
@@ -135,11 +135,18 @@ namespace Main.Scripts.Entity
         {
             if (!canMove) return;
 
-            var target = gameState.RequestLandingPosition(this);
+            var target = gameData.RequestLandingPosition(this);
             Debug.Log($"RedFlag {grid} move to {target}");
 
             const float duration = 1f;
-            Move(target, duration);
+            Move(target, duration, () =>
+            {
+                // // Detach from current parent
+                // transform.SetParent(null, false);
+                //
+                // // Set new parent
+                // transform.SetParent(target, false);
+            });
 
             TurnOffCollider();
             StartCoroutine(DelayCheckMove());
@@ -156,11 +163,13 @@ namespace Main.Scripts.Entity
         /// </summary>
         /// <param name="target"></param>
         /// <param name="duration"></param>
-        private void Move(Vector3 target, float duration)
+        /// <param name="onComplete"></param>
+        private void Move(Vector3 target, float duration, Action onComplete = null)
         {
             var sequence = DOTween.Sequence();
             sequence.Append(transform.DOMove(target, duration));
             sequence.Join(transform.DOLocalRotate(new Vector3(0, 360, 0), duration, RotateMode.FastBeyond360));
+            sequence.OnComplete(() => onComplete?.Invoke());
 
             sequence.Play();
         }

@@ -32,7 +32,7 @@ namespace Main.Scripts
             var screenPos = Input.mousePosition;
             var ray = Camera.main.ScreenPointToRay(screenPos);
 
-            if (Physics.Raycast(ray, out var hitInfo, 100, HexagonInfo.ENTITY_LAYER))
+            if (Physics.Raycast(ray, out var hitInfo, 100, GameConstant.ENTITY_LAYER))
             {
                 var visualPassenger = hitInfo.collider.GetComponentInParent<Hexagon>();
                 visualPassenger.FindTargetAndMove();

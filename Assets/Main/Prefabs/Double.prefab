@@ -155,18 +155,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c2e426dc80001324dbd91dcb8138c472, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gameState: {fileID: 11400000, guid: 0dee7e2ad7e5e8e4da51c835b1104dd4, type: 2}
+  gameData: {fileID: 11400000, guid: 0dee7e2ad7e5e8e4da51c835b1104dd4, type: 2}
   renderers:
   - {fileID: 7656548708863338604}
   - {fileID: 8372910139006161435}
   - {fileID: 2003940777000330145}
+  colliders: []
   grid:
     x: 0
     y: 0
     z: 0
   height: 0.15
   radius: 0.5
-  isAvailable: 0
+  canMove: 0
 --- !u!4 &5066283166438545231 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6621917254669801451, guid: 8f0d9437a6e34a448a7016c25629ee01, type: 3}
@@ -308,15 +309,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c2e426dc80001324dbd91dcb8138c472, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gameState: {fileID: 11400000, guid: 0dee7e2ad7e5e8e4da51c835b1104dd4, type: 2}
+  gameData: {fileID: 11400000, guid: 0dee7e2ad7e5e8e4da51c835b1104dd4, type: 2}
   renderers:
   - {fileID: 632126717311165567}
   - {fileID: 1636716458729889288}
   - {fileID: 8740123613557796786}
+  colliders: []
   grid:
     x: 0
     y: 0
     z: 0
   height: 0.15
   radius: 0.5
-  isAvailable: 0
+  canMove: 0

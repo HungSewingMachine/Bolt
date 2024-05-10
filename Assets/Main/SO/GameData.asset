@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f609f8f842bd40fdbf622e774d237f12, type: 3}
-  m_Name: GameState
+  m_Name: GameData
   m_EditorClassIdentifier: 
   boxPosition: {x: 0, y: 0, z: 10}
   currentColor: 1

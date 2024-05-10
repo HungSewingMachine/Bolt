@@ -20,7 +20,7 @@ namespace Main.Scripts
     {
         public HexColor[] sampleColors;
 
-        [SerializeField] private GameState    gameState;
+        [SerializeField] private GameData    gameData;
         [SerializeField] private MapGenerator mapGenerator;
 
         public string fileName = "Level3";
@@ -63,7 +63,7 @@ namespace Main.Scripts
                 colors.Add(GetColorFromIndex(colorIndex));
             }
             
-            gameState.InitializeColor(colors);
+            gameData.InitializeColor(colors);
             
             colors.ShuffleNElements(9);
             var increasingLayerList = objects.OrderBy(hex => hex.Coordinate.y).ToList();
