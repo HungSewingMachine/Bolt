@@ -44,9 +44,10 @@ namespace Main.Scripts.Entity
         /// <param name="list"></param>
         public void Initialize(GameManager manager, WaitingArea area, IEnumerable<HexColor> list)
         {
-            gameManager = manager;
-            waitingArea = area;
-            counter     = 0;
+            IsTransitionBox = false;
+            gameManager     = manager;
+            waitingArea     = area;
+            counter         = 0;
             // Set up color data
             var listColor = new List<HexColor>(list);
             listColor.Reverse();
