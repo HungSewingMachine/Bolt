@@ -4,6 +4,7 @@ using Main.Scripts.Entity;
 using Main.Scripts.State;
 using Main.Scripts.Utils;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace Main.Scripts
 {
@@ -64,8 +65,8 @@ namespace Main.Scripts
             }
             
             gameData.InitializeColor(this,colors);
-            
-            colors.ShuffleNElements(9);
+
+            colors.ShuffleNElements(9, 3 + 1);
             var increasingLayerList = objects.OrderBy(hex => hex.Coordinate.y).ToList();
             
             for (int i = 0; i < objects.Length; i++)
@@ -84,6 +85,11 @@ namespace Main.Scripts
                     _ => HexColor.None,
                 };
             }
+        }
+
+        public void ReloadGame()
+        {
+            SceneManager.LoadScene(0);
         }
     }
 }
