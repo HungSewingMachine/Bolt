@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
 using Main.Scripts.Utils;
@@ -14,6 +13,11 @@ namespace Main.Scripts.Entity
         [SerializeField] private List<Transform> boxTransforms;
 
         [SerializeField] private List<HexColor> colors;
+        
+        private GameManager gameManager;
+        private WaitingArea waitingArea;
+        
+        public bool IsTransitionBox { get; private set; }
         
         public HexColor CurrentColor
         {
@@ -38,8 +42,10 @@ namespace Main.Scripts.Entity
         /// We reverse it so that we can utilize counter variable to travel from ceil to floor.
         /// </summary>
         /// <param name="list"></param>
-        public void Initialize(IEnumerable<HexColor> list)
+        public void Initialize(GameManager manager, WaitingArea area, IEnumerable<HexColor> list)
         {
+            gameManager = manager;
+            waitingArea = area;
             counter     = 0;
             // Set up color data
             var listColor = new List<HexColor>(list);
@@ -58,21 +64,47 @@ namespace Main.Scripts.Entity
             }
         }
 
-        public Vector3 AddToBoxLine(Hexagon hex, out bool isColorChange)
+        public Vector3 AddToBoxLine(Hexagon hex)
         {
             // Set parent and position calculation must be done before counter increase
             const int boxCapacity = GameConstant.BOX_CAPACITY;
             var result = new Vector3(counter % boxCapacity, BOX_Y_POSITION, BOX_Z_POSITION);
             var currentBox = boxTransforms[counter / boxCapacity];
+            counter += 1;
             hex.RegisterParent(currentBox);
             
             // Current game color depend on counter so if we want delay color change event we delay counter
-            isColorChange = (counter + 1) % boxCapacity == 0;
+            var isColorChange = counter % boxCapacity == 0;
+            if (isColorChange)
+            {
+                // Run Animation and done
+                // Delay 2s chay animation
+                PlayBoxTransition();
+            }
 
             return result;
         }
 
-        public void UpdateLinePosition()
+        /// <summary>
+        /// The time delay = time travel to box + time box play animation close.
+        /// Currently test for 2s
+        /// </summary>
+        private void PlayBoxTransition()
+        {
+            IsTransitionBox = true;
+            gameManager.DelaySec(() =>
+            {
+                UpdateLinePosition(() =>
+                {
+                    if (counter - 1 < 0) return;
+                    var previousColor = colors[counter - 1];
+                    waitingArea.OnGameColorChanged(previousColor);
+                });
+                IsTransitionBox = false;
+            },GameConstant.BOX_DELAY_TIME);
+        }
+
+        public void UpdateLinePosition(Action onComplete = null)
         {
             // Move the line
             var sequence = DOTween.Sequence();
@@ -80,11 +112,8 @@ namespace Main.Scripts.Entity
             {
                 sequence.Join(t.DOMove(t.WithXShift(GameConstant.DISTANCE_BETWEEN_BOX), GameConstant.BOX_MOVE_DURATION));
             }
-        }
 
-        public void Tick()
-        {
-            counter += 1;
+            sequence.OnComplete(() => onComplete?.Invoke());
         }
     }
 }

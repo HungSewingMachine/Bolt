@@ -10,13 +10,12 @@ namespace Main.Scripts.State
         [SerializeField] private BoxLine boxLine;
 
         private WaitingArea waitingArea;
-        private GameManager gameManager;
+        
 
         public void InitializeColor(GameManager manager, IEnumerable<HexColor> list)
         {
-            gameManager = manager;
             waitingArea = new WaitingArea();
-            boxLine.Initialize(list);
+            boxLine.Initialize(manager, waitingArea, list);
         }
 
         /// <summary>
@@ -27,26 +26,10 @@ namespace Main.Scripts.State
         public Vector3 RequestLanding(Hexagon hex)
         {
             var isColorMatch = hex.ElementColor == boxLine.CurrentColor;
-            if (isColorMatch)
+            
+            if (isColorMatch && !boxLine.IsTransitionBox)
             {
-                var position = boxLine.AddToBoxLine(hex, out var isColorChange);
-                if (isColorChange)
-                {
-                    // Wait
-                    gameManager.DelaySec(() =>
-                    {
-                        boxLine.UpdateLinePosition();
-
-                        boxLine.Tick();
-
-                        // Handle wait line
-
-                    }, 2f);
-                }
-                else
-                {
-                    boxLine.Tick();
-                }
+                var position = boxLine.AddToBoxLine(hex);
 
                 return position;
             }
