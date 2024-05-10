@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using DG.Tweening;
+using Main.Scripts.Utils;
 using UnityEngine;
 
 namespace Main.Scripts.Entity
@@ -7,11 +10,11 @@ namespace Main.Scripts.Entity
     [Serializable]
     public class BoxLine
     {
-        // public Transform       boxPrefab;
-        // public List<Transform> boxTransforms;
-        
-        public List<HexColor> colors;
+        [SerializeField] private Transform       boxPrefab;
+        [SerializeField] private List<Transform> boxTransforms;
 
+        [SerializeField] private List<HexColor> colors;
+        
         public HexColor CurrentColor
         {
             get
@@ -37,19 +40,51 @@ namespace Main.Scripts.Entity
         /// <param name="list"></param>
         public void Initialize(IEnumerable<HexColor> list)
         {
-            var result = new List<HexColor>(list);
-            result.Reverse();
-            colors = result;
+            counter     = 0;
+            // Set up color data
+            var listColor = new List<HexColor>(list);
+            listColor.Reverse();
+            colors = listColor;
+
+            var numberOfBox = listColor.Count / GameConstant.BOX_CAPACITY;
+            boxTransforms = new List<Transform>();
+            for (var i = 0; i < numberOfBox; i++)
+            {
+                var box = GameObject.Instantiate(boxPrefab, new Vector3(1 - i * GameConstant.DISTANCE_BETWEEN_BOX, BOX_Y_POSITION, BOX_Z_POSITION),
+                    Quaternion.identity);
+                boxTransforms.Add(box);
+                var renderer = box.GetComponent<Renderer>();
+                GameUtils.ColorObject(renderer, colors[i * GameConstant.BOX_CAPACITY]);
+            }
         }
 
-        public Vector3 GetPositionInBox(Hexagon hex)
+        public Vector3 AddToBoxLine(Hexagon hex, out bool isColorChange)
         {
+            // Set parent and position calculation must be done before counter increase
             const int boxCapacity = GameConstant.BOX_CAPACITY;
             var result = new Vector3(counter % boxCapacity, BOX_Y_POSITION, BOX_Z_POSITION);
-            counter       += 1;
-            //isColorChange =  counter % boxCapacity == 0;
+            var currentBox = boxTransforms[counter / boxCapacity];
+            hex.RegisterParent(currentBox);
             
+            // Current game color depend on counter so if we want delay color change event we delay counter
+            isColorChange = (counter + 1) % boxCapacity == 0;
+
             return result;
+        }
+
+        public void UpdateLinePosition()
+        {
+            // Move the line
+            var sequence = DOTween.Sequence();
+            foreach (var t in boxTransforms)
+            {
+                sequence.Join(t.DOMove(t.WithXShift(GameConstant.DISTANCE_BETWEEN_BOX), GameConstant.BOX_MOVE_DURATION));
+            }
+        }
+
+        public void Tick()
+        {
+            counter += 1;
         }
     }
 }

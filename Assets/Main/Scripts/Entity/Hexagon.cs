@@ -2,8 +2,8 @@ using System;
 using System.Collections;
 using DG.Tweening;
 using Main.Scripts.State;
+using Main.Scripts.Utils;
 using NaughtyAttributes;
-using Unity.VisualScripting;
 using UnityEngine;
 
 namespace Main.Scripts.Entity
@@ -27,6 +27,8 @@ namespace Main.Scripts.Entity
         public float radius  = 0.58f - 0.08f;
         public bool  canMove = false;
 
+        private Transform parentBox;
+
         private const float UNIT_ANGLE         = Mathf.PI / 3;
         private const float MAX_CHECK_DISTANCE = 0.2f;
         private const int   HEXAGON_LAYER      = 1 << 7;
@@ -38,6 +40,11 @@ namespace Main.Scripts.Entity
 
         // if using custom shader, replace it with appropriate name not _Color
         private static readonly int ColorField = Shader.PropertyToID("_Color");
+
+        public void RegisterParent(Transform t)
+        {
+            parentBox = t;
+        }
 
         private Vector3 GetStartOriginPoint(Transform t)
         {
@@ -72,21 +79,6 @@ namespace Main.Scripts.Entity
             // Turn on anim, ...
             canMove = true;
             // ChangeColor(Color.white);
-        }
-
-        public bool CheckCanMove()
-        {
-            foreach (var angle in Angles)
-            {
-                var checkPoint = GetPositionFromAngle(transform, angle - Mathf.PI / 6);
-                Debug.Log($"RedFlag check point {checkPoint}!");
-                if (Physics.Raycast(checkPoint, Vector3.up, 10, HEXAGON_LAYER))
-                {
-                    return false;
-                }
-            }
-
-            return true;
         }
 
         private Vector3 GetPositionFromAngle(Transform t, float angle)
@@ -135,17 +127,14 @@ namespace Main.Scripts.Entity
         {
             if (!canMove) return;
 
-            var target = gameData.RequestLandingPosition(this);
+            var target = gameData.RequestLanding(this);
             Debug.Log($"RedFlag {grid} move to {target}");
 
             const float duration = 1f;
             Move(target, duration, () =>
             {
-                // // Detach from current parent
-                // transform.SetParent(null, false);
-                //
-                // // Set new parent
-                // transform.SetParent(target, false);
+                if (parentBox != null)
+                    transform.SetParentAndReset(parentBox);
             });
 
             TurnOffCollider();

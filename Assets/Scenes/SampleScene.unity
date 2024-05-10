@@ -274,7 +274,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sampleColors: 00000000010000000200000003000000
-  gameState: {fileID: 11400000, guid: 0dee7e2ad7e5e8e4da51c835b1104dd4, type: 2}
+  gameData: {fileID: 11400000, guid: 0dee7e2ad7e5e8e4da51c835b1104dd4, type: 2}
   mapGenerator: {fileID: 783180078}
   fileName: Level3
   allowSpawn: 1

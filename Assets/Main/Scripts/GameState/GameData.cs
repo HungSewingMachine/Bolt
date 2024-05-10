@@ -10,21 +10,44 @@ namespace Main.Scripts.State
         [SerializeField] private BoxLine boxLine;
 
         private WaitingArea waitingArea;
+        private GameManager gameManager;
 
-        public void InitializeColor(List<HexColor> list)
+        public void InitializeColor(GameManager manager, IEnumerable<HexColor> list)
         {
+            gameManager = manager;
             waitingArea = new WaitingArea();
-            boxLine     = new BoxLine();
             boxLine.Initialize(list);
         }
 
-        public Vector3 RequestLandingPosition(Hexagon hex)
+        /// <summary>
+        /// Process A hexagon moving
+        /// </summary>
+        /// <param name="hex"></param>
+        /// <returns></returns>
+        public Vector3 RequestLanding(Hexagon hex)
         {
             var isColorMatch = hex.ElementColor == boxLine.CurrentColor;
             if (isColorMatch)
             {
-                var position = boxLine.GetPositionInBox(hex);
-                // if color change => move next box to it
+                var position = boxLine.AddToBoxLine(hex, out var isColorChange);
+                if (isColorChange)
+                {
+                    // Wait
+                    gameManager.DelaySec(() =>
+                    {
+                        boxLine.UpdateLinePosition();
+
+                        boxLine.Tick();
+
+                        // Handle wait line
+
+                    }, 2f);
+                }
+                else
+                {
+                    boxLine.Tick();
+                }
+
                 return position;
             }
 

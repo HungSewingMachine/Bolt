@@ -63,7 +63,7 @@ namespace Main.Scripts
                 colors.Add(GetColorFromIndex(colorIndex));
             }
             
-            gameData.InitializeColor(colors);
+            gameData.InitializeColor(this,colors);
             
             colors.ShuffleNElements(9);
             var increasingLayerList = objects.OrderBy(hex => hex.Coordinate.y).ToList();
