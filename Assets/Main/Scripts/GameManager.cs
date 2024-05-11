@@ -42,6 +42,7 @@ namespace Main.Scripts
 
         public void CheckPossibleMove()
         {
+            Debug.Log($"RedFlag check possible move!");
             foreach (var hexagon in hexagons)
             {
                 hexagon.CheckMovable();
@@ -64,7 +65,7 @@ namespace Main.Scripts
                 colors.Add(GetColorFromIndex(colorIndex));
             }
             
-            gameData.InitializeColor(this,colors);
+            InitializeColor(this,colors);
 
             colors.ShuffleNElements(9, 3 + 1);
             var increasingLayerList = objects.OrderBy(hex => hex.Coordinate.y).ToList();
@@ -91,5 +92,39 @@ namespace Main.Scripts
         {
             SceneManager.LoadScene(0);
         }
+
+        // =======================================================
+        [SerializeField] private BoxLine boxLine;
+
+        [SerializeField] private WaitingArea waitingArea;
+
+        public bool IsColorMatch(HexColor c) => c == boxLine.CurrentColor;
+
+        public void InitializeColor(GameManager manager, IEnumerable<HexColor> list)
+        {
+            waitingArea = new WaitingArea();
+            boxLine.Initialize(manager, waitingArea, list);
+        }
+
+        /// <summary>
+        /// Calculate the position for hex to move. Then reupdate all posible move
+        /// </summary>
+        /// <param name="hex"></param>
+        /// <returns>position which the hexagon move to</returns>
+        public Vector3 RequestLanding(Hexagon hex, bool fromWaitLine)
+        {
+            CheckPossibleMove();
+
+            if (IsColorMatch(hex.ElementColor) && (fromWaitLine || IsBoxSlotStable))
+            {
+                var position = boxLine.AddToBoxLine(hex);
+
+                return position;
+            }
+
+            return waitingArea.AddWrongColorObject(hex);
+        }
+
+        public bool IsBoxSlotStable => !boxLine.IsTransitionBox;
     }
 }

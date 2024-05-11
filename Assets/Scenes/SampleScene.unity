@@ -357,6 +357,11 @@ MonoBehaviour:
   mapGenerator: {fileID: 783180078}
   fileName: Level3
   allowSpawn: 1
+  boxLine:
+    boxPrefab: {fileID: 1913115436190020190, guid: b1fec43efd27a714db741647def4df87, type: 3}
+    boxTransforms: []
+    colors: 
+    counter: 0
 --- !u!4 &149298816
 Transform:
   m_ObjectHideFlags: 0
@@ -1112,6 +1117,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   prefab: {fileID: 7961936646000013114, guid: a10117db72fce9a48bf119aa14abcde0, type: 3}
+  gameManager: {fileID: 149298815}
 --- !u!4 &783180079
 Transform:
   m_ObjectHideFlags: 0

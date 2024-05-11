@@ -1,15 +1,25 @@
 using System;
-using System.Collections;
 using DG.Tweening;
 using Main.Scripts.State;
 using Main.Scripts.Utils;
-using NaughtyAttributes;
 using UnityEngine;
 
 namespace Main.Scripts.Entity
 {
+    public enum EntityState
+    {
+        Stable,
+        Moving,
+        MoveDone,
+        AtDestination,
+    }
+
     public class Hexagon : MonoBehaviour
     {
+        public EntityState state;
+        //private bool canAddToBoxLine = false;
+        private bool isMoveFromWaitLine;
+
         [SerializeField] private GameData gameData;
 
         // === Only Test change color
@@ -28,6 +38,7 @@ namespace Main.Scripts.Entity
         public bool  canMove = false;
 
         private Transform parentBox;
+        private GameManager gameManager;
 
         private const float UNIT_ANGLE         = Mathf.PI / 3;
         private const float MAX_CHECK_DISTANCE = 0.2f;
@@ -43,6 +54,7 @@ namespace Main.Scripts.Entity
 
         public void RegisterParent(Transform t)
         {
+            //canAddToBoxLine = true;
             parentBox = t;
         }
 
@@ -61,13 +73,13 @@ namespace Main.Scripts.Entity
 
         public void CheckMovable()
         {
-            Debug.Log($"RedFlag check movable!");
+            // Debug.Log($"RedFlag check movable!");
             if (canMove) return;
 
             foreach (var angle in Angles)
             {
                 var checkPoint = GetPositionFromAngle(transform, angle - Mathf.PI / 6);
-                Debug.Log($"RedFlag check point {checkPoint}!");
+                // Debug.Log($"RedFlag check point {checkPoint}!");
                 if (Physics.Raycast(checkPoint, Vector3.up, 10, HEXAGON_LAYER))
                 {
                     canMove = false;
@@ -89,7 +101,7 @@ namespace Main.Scripts.Entity
 
         protected virtual void LogCanNotMove()
         {
-            Debug.Log($"RedFlag Detect False");
+            //Debug.Log($"RedFlag Detect False");
         }
 
         public void ChangeColor(HexColor color)
@@ -117,34 +129,57 @@ namespace Main.Scripts.Entity
             }
         }
 
-        public void Initialize(Grid grid)
+        public void Initialize(Grid grid, GameManager manager)
         {
             this.grid  = grid;
             Coordinate = grid;
+            gameManager = manager;
+            state = EntityState.Stable;
         }
 
-        public void FindTargetAndMove(bool fromWailLine = false)
+        /// <summary>
+        /// Wait so that collider if turn off, then request GameManager a position and recalculate possible move.
+        /// </summary>
+        public void FindTargetThenMove(bool fromWaitLine = false)
         {
             if (!canMove) return;
 
-            var target = gameData.RequestLanding(this, fromWailLine);
+            TurnOffCollider();
+            this.DelayExecute(() => GetTargetPosition(fromWaitLine), 0.1f);
+        }
+
+        /// <summary>
+        /// If hexagon is moving and call this function again, that mean it called from waitLine.
+        /// </summary>
+        private void GetTargetPosition(bool fromWaitLine = false)
+        {
+            if (state == EntityState.AtDestination) return;
+
+            if (state == EntityState.Moving)
+            {
+                var isMoveToWaitLine = parentBox == null;
+                isMoveFromWaitLine = isMoveToWaitLine;
+                return;
+            }
+
+            state = EntityState.Moving;
+            var target = gameManager.RequestLanding(this, fromWaitLine);
             Debug.Log($"RedFlag {grid} move to {target}");
 
             const float duration = 1f;
             Move(target, duration, () =>
             {
                 if (parentBox != null)
+                {
                     transform.SetParentAndReset(parentBox);
+                    state = EntityState.AtDestination;
+                }
+                else
+                {
+                    state = EntityState.MoveDone;
+                }
+                
             });
-
-            TurnOffCollider();
-            StartCoroutine(DelayCheckMove());
-        }
-
-        private IEnumerator DelayCheckMove()
-        {
-            yield return new WaitForSeconds(0.1f);
-            FindObjectOfType<GameManager>().CheckPossibleMove();
         }
 
         /// <summary>
@@ -163,18 +198,18 @@ namespace Main.Scripts.Entity
             sequence.Play();
         }
 
-#if UNITY_EDITOR
-
-        [Button]
-        public void TestMoveToDestination()
+        private void Update()
         {
+            if (isMoveFromWaitLine && state == EntityState.MoveDone && gameManager.IsBoxSlotStable)
+            {
+                // Request to move again!
+                isMoveFromWaitLine = false;
+                state = EntityState.Stable;
+                GetTargetPosition(fromWaitLine: true);
+            }
         }
 
-        // [Button]
-        // public void TestChangeColor()
-        // {
-        //     ChangeColor(testColor);
-        // }
+#if UNITY_EDITOR
 
         private void OnDrawGizmos()
         {

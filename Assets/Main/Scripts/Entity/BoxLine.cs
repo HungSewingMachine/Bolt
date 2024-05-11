@@ -45,9 +45,9 @@ namespace Main.Scripts.Entity
         public void Initialize(GameManager manager, WaitingArea area, IEnumerable<HexColor> list)
         {
             IsTransitionBox = false;
+            counter         = 0;
             gameManager     = manager;
             waitingArea     = area;
-            counter         = 0;
             // Set up color data
             var listColor = new List<HexColor>(list);
             listColor.Reverse();
@@ -99,18 +99,22 @@ namespace Main.Scripts.Entity
         private void PlayBoxTransition()
         {
             IsTransitionBox = true;
-            gameManager.DelaySec(() =>
+            gameManager.DelayExecute(() =>
             {
                 UpdateLinePosition(() =>
                 {
-                    waitingArea.OnGameColorChanged(CurrentColor);
                     IsTransitionBox = false;
+                    Debug.Log("XXX Transition false!");
+                }, () =>
+                {
+                    waitingArea.OnGameColorChanged(CurrentColor);
+                    Debug.Log("XXX On Game Color Changed!");
                 });
                 
             },GameConstant.BOX_DELAY_TIME);
         }
 
-        public void UpdateLinePosition(Action onComplete = null)
+        public void UpdateLinePosition(Action onComplete = null, Action callback = null)
         {
             // Move the line
             var sequence = DOTween.Sequence();
@@ -118,6 +122,9 @@ namespace Main.Scripts.Entity
             {
                 sequence.Join(t.DOMove(t.WithXShift(GameConstant.DISTANCE_BETWEEN_BOX), GameConstant.BOX_MOVE_DURATION));
             }
+
+            sequence.AppendCallback(() => callback?.Invoke());
+            sequence.AppendInterval(0.1f);
 
             sequence.OnComplete(() => onComplete?.Invoke());
         }

@@ -29,7 +29,7 @@ namespace Main.Scripts
 
         private static readonly Dictionary<float, WaitForSeconds> WaitDictionary = new Dictionary<float, WaitForSeconds>();
         
-        public static Coroutine DelaySec(this MonoBehaviour monoBehavior, Action functionWantDelay,
+        public static Coroutine DelayExecute(this MonoBehaviour monoBehavior, Action functionWantDelay,
             float? timeDelay = null)
         {
             return monoBehavior.StartCoroutine(IEWait(functionWantDelay, timeDelay));

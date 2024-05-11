@@ -7,13 +7,14 @@ namespace Main.Scripts
     public class MapGenerator : MonoBehaviour
     {
         public HexBundle prefab;
+        public GameManager gameManager;
 
         public void Generate(List<Grid> grids, Vector3 offset)
         {
             foreach (var grid in grids)
             {
                 var bundle = Instantiate(prefab, GetPosition(grid, offset), Quaternion.identity);
-                bundle.Initialize(grid);
+                bundle.Initialize(grid, gameManager);
             }
         }
 

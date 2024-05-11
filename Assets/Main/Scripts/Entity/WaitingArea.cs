@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Main.Scripts.Entity
@@ -6,6 +7,7 @@ namespace Main.Scripts.Entity
     /// <summary>
     /// manage list o
     /// </summary>
+    [Serializable]
     public class WaitingArea
     {
         public Vector3[] waitPositions = new Vector3[6]
@@ -18,7 +20,7 @@ namespace Main.Scripts.Entity
             new Vector3(10,0,7),
         };
 
-        private int counter = 0;
+        [SerializeField] private int counter = 0;
 
         public List<Hexagon> waitList;
 
@@ -52,7 +54,7 @@ namespace Main.Scripts.Entity
 
                 for (int i = 0; i < newList.Count; i++)
                 {
-                    newList[i].FindTargetAndMove(true);
+                    newList[i].FindTargetThenMove(true);
                 }
             }
         }

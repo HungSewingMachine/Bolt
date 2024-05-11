@@ -35,7 +35,7 @@ namespace Main.Scripts
             if (Physics.Raycast(ray, out var hitInfo, 100, GameConstant.ENTITY_LAYER))
             {
                 var visualPassenger = hitInfo.collider.GetComponentInParent<Hexagon>();
-                visualPassenger.FindTargetAndMove();
+                visualPassenger.FindTargetThenMove();
             }
         }
     }
