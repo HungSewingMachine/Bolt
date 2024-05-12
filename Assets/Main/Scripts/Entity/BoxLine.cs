@@ -45,9 +45,10 @@ namespace Main.Scripts.Entity
         public void OnMoveToBoxComplete()
         {
             actualIndex += 1;
-            if (actualIndex >= 3)
+            if (index == 3 && actualIndex >= 3)
             {
                 // Change box
+                actualIndex = 0;
                 Debug.Log($"RedFlagXX change box");
                 boxLine.PlayBoxTransition();
             }

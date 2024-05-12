@@ -148,24 +148,6 @@ namespace Main.Scripts.Entity
             this.DelayExecute(() => GetTargetPosition(fromWaitLine), 0.1f);
         }
 
-        private IEnumerator GetToBox(bool fromWaitLine)
-        {
-            var target = gameManager.RequestLanding(this, fromWaitLine);
-            yield return new WaitUntil(() => state == EntityState.MoveDone);
-
-            const float duration = 1f;
-            Move(target, duration, () =>
-            {
-                if (parentBox != null)
-                {
-                    transform.SetParentAndReset(parentBox.boxTransform);
-                    parentBox.OnMoveToBoxComplete();
-                }
-
-                state = EntityState.MoveDone;
-            });
-        }
-
         /// <summary>
         /// If hexagon is moving and call this function again, that mean it called from waitLine.
         /// </summary>
