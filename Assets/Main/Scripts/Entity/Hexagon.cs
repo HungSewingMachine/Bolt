@@ -38,7 +38,7 @@ namespace Main.Scripts.Entity
         public float radius  = 0.58f - 0.08f;
         public bool  canMove = false;
 
-        private Transform parentBox;
+        private Box parentBox;
         private GameManager gameManager;
 
         private const float UNIT_ANGLE         = Mathf.PI / 3;
@@ -53,10 +53,9 @@ namespace Main.Scripts.Entity
         // if using custom shader, replace it with appropriate name not _Color
         private static readonly int ColorField = Shader.PropertyToID("_Color");
 
-        public void RegisterParent(Transform t)
+        public void RegisterBox(Box box)
         {
-            //canAddToBoxLine = true;
-            parentBox = t;
+            parentBox = box;
         }
 
         private Vector3 GetStartOriginPoint(Transform t)
@@ -159,7 +158,8 @@ namespace Main.Scripts.Entity
             {
                 if (parentBox != null)
                 {
-                    transform.SetParentAndReset(parentBox);
+                    transform.SetParentAndReset(parentBox.boxTransform);
+                    parentBox.OnMoveToBoxComplete();
                 }
 
                 state = EntityState.MoveDone;
@@ -173,7 +173,7 @@ namespace Main.Scripts.Entity
         {
             if (state == EntityState.Moving)
             {
-                StartCoroutine(GetToBox(fromWaitLine));
+                //StartCoroutine(GetToBox(fromWaitLine));
                 return;
             }
 
@@ -191,7 +191,8 @@ namespace Main.Scripts.Entity
             {
                 if (parentBox != null)
                 {
-                    transform.SetParentAndReset(parentBox);
+                    transform.SetParentAndReset(parentBox.boxTransform);
+                    parentBox.OnMoveToBoxComplete();
                 }
 
                 state = EntityState.MoveDone;

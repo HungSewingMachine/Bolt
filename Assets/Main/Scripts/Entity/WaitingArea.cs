@@ -35,18 +35,23 @@ namespace Main.Scripts.Entity
         public void MarkColorChange()
         {
             extraCounter = counter;
-            isReserveMode = true;
+            isProcessing = true;
         }
 
         /// <summary>
         /// Loop through the list, free hexagon that have the same color, rearrange list.
         /// </summary>
         /// <param name="c"></param>
-        public void OnGameColorChanged(List<HexColor> colors, int colorCounter)
+        public void OnGameColorChanged(Box currentBox)
         {
+            MarkColorChange();
             Debug.Log("XXX On Game Color Changed!");
 
-            var c = colors[colorCounter];
+            if (!currentBox.HasAvailableSlot) return;
+
+            // If has slot
+
+            var c = currentBox.color;
             var hasMatchColor = false;
             for (int i = 0; i < waitList.Count; i++)
             {
@@ -65,32 +70,15 @@ namespace Main.Scripts.Entity
                 counter = 0;
 
 
-                gameManager.FreeWaitLine(c, newList, waitPositions, waitList, ref counter);
+                gameManager.FreeWaitLine(currentBox, newList, waitPositions, waitList, ref counter);
             }
 
-            isReserveMode = false;
+            isProcessing = false;
         }
 
-        public bool isReserveMode;
+        public bool isProcessing;
         public int extraCounter;
         public List<Hexagon> extraList = new List<Hexagon>();
-
-        public void Update()
-        {
-            if (!isReserveMode)
-            {
-                if (extraList.Count != 0)
-                {
-                    for (int i = 0; i < extraList.Count; i++)
-                    {
-                        var position = gameManager.SendToBoxLine(extraList[i]);
-                        extraList[i].MoveTo(position);
-                    }
-                    extraList.Clear();
-                    extraCounter = counter;
-                }
-            }
-        }
 
         public Vector3 AddWrongColorObject(Hexagon hex)
         {
@@ -100,9 +88,9 @@ namespace Main.Scripts.Entity
                 return Vector3.zero;
             }
 
-            var index = isReserveMode ? extraCounter : counter;
+            var index = isProcessing ? extraCounter : counter;
             var currentAvailableSlot = waitPositions[index];
-            if (isReserveMode)
+            if (isProcessing)
             {
                 extraList.Add(hex);
                 extraCounter++;

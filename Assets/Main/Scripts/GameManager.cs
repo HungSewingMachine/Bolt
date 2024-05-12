@@ -1,14 +1,10 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using DG.Tweening.Core.Easing;
 using Main.Scripts.Entity;
 using Main.Scripts.State;
 using Main.Scripts.Utils;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using static UnityEditor.Experimental.AssetDatabaseExperimental.AssetDatabaseCounters;
 
 namespace Main.Scripts
 {
@@ -47,19 +43,24 @@ namespace Main.Scripts
         private bool check;
         private void Update()
         {
-            if (!waitingArea.isReserveMode)
+            if (!waitingArea.isProcessing)
             {
                 check = true;
             }
 
             if (check && !boxLine.IsTransitionBox)
             {
+                //if (!boxLine.CurrentBox.HasAvailableSlot)
+
                 var list = waitingArea.extraList;
+                // Normally extraList is empty so it end here
+
+                // Neu con slot thi add nhung phan tu co the vao, con lai dua ve wait list
                 if (list.Count != 0)
                 {
                     for (int i = 0; i < list.Count; i++)
                     {
-                        if (IsColorMatch(list[i].ElementColor))
+                        if (boxLine.CurrentBox.HasAvailableSlot && IsColorMatch(list[i].ElementColor))
                         {
                             var position = SendToBoxLine(list[i]);
                             list[i].MoveTo(position);
@@ -153,7 +154,7 @@ namespace Main.Scripts
         {
             CheckPossibleMove();
 
-            if (IsColorMatch(hex.ElementColor) && (fromWaitLine || IsBoxSlotStable))
+            if (!waitingArea.isProcessing && (IsBoxSlotStable && boxLine.CurrentBox.HasAvailableSlot && IsColorMatch(hex.ElementColor)))
             {
                 return SendToBoxLine(hex);
             }
@@ -166,34 +167,39 @@ namespace Main.Scripts
             return boxLine.AddToBoxLine(hex);
         }
 
-        public void FreeWaitLine(HexColor c,List<Hexagon> list, Vector3[] waitPositions, List<Hexagon> waitList, ref int counter)
+        public void FreeWaitLine(Box currentBox,List<Hexagon> list, Vector3[] waitPositions, List<Hexagon> waitList, ref int counter)
         {
             Debug.Log($"RedFlagX free wait line!");
             var smallestSlotIndex = int.MaxValue;
-            var currentColor = c;
+            var currentColor = currentBox.color;
+
+            var listMove = new List<Hexagon>();
             for (int i = 0; i < list.Count; i++)
             {
+                if (!currentBox.HasAvailableSlot) break;
                 if (list[i].ElementColor == currentColor)
                 {
                     var position = SendToBoxLine(list[i]);
                     list[i].MoveTo(position);
+                    listMove.Add(list[i]);
+                    Debug.Log($"RedFlag XXX {smallestSlotIndex} {i}");
                     if (smallestSlotIndex > i) smallestSlotIndex = i;
                 }
             }
 
+
             for (int i = 0; i < list.Count; i++)
             {
-                if (list[i].ElementColor != currentColor)
+                if (listMove.Contains(list[i])) continue;
+
+                waitList.Add(list[i]);
+                Debug.Log($"RedFlag XXX add to list {list[i].grid}");
+                counter++;
+                if (i > smallestSlotIndex)
                 {
-                    
-                    waitList.Add(list[i]);
-                    Debug.Log($"RedFlag add to list {list[i].grid}");
-                    counter++;
-                    if (i > smallestSlotIndex)
-                    {
-                        list[i].MoveTo(waitPositions[smallestSlotIndex]);
-                        smallestSlotIndex++;
-                    }
+                    list[i].MoveTo(waitPositions[smallestSlotIndex]);
+                    smallestSlotIndex++;
+                    Debug.Log($"RedFlag XXX move to {list[i].grid}");
                 }
             }
         }
