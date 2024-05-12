@@ -20,21 +20,33 @@ namespace Main.Scripts.Entity
             new Vector3(10,0,7),
         };
 
-        [SerializeField] private int counter = 0;
+        public int counter = 0;
 
         public List<Hexagon> waitList;
 
-        public WaitingArea()
+        private GameManager gameManager;
+
+        public WaitingArea(GameManager manager)
         {
             waitList = new List<Hexagon>();
+            gameManager = manager;
+        }
+
+        public void MarkColorChange()
+        {
+            extraCounter = counter;
+            isReserveMode = true;
         }
 
         /// <summary>
         /// Loop through the list, free hexagon that have the same color, rearrange list.
         /// </summary>
         /// <param name="c"></param>
-        public void OnGameColorChanged(HexColor c)
+        public void OnGameColorChanged(List<HexColor> colors, int colorCounter)
         {
+            Debug.Log("XXX On Game Color Changed!");
+
+            var c = colors[colorCounter];
             var hasMatchColor = false;
             for (int i = 0; i < waitList.Count; i++)
             {
@@ -48,13 +60,34 @@ namespace Main.Scripts.Entity
             if (hasMatchColor)
             {
                 var newList = new List<Hexagon>(waitList);
-            
+                Debug.Log($"RedFlagX list length {newList.Count}!");
                 waitList.Clear();
                 counter = 0;
 
-                for (int i = 0; i < newList.Count; i++)
+
+                gameManager.FreeWaitLine(c, newList, waitPositions, waitList, ref counter);
+            }
+
+            isReserveMode = false;
+        }
+
+        public bool isReserveMode;
+        public int extraCounter;
+        public List<Hexagon> extraList = new List<Hexagon>();
+
+        public void Update()
+        {
+            if (!isReserveMode)
+            {
+                if (extraList.Count != 0)
                 {
-                    newList[i].FindTargetThenMove(true);
+                    for (int i = 0; i < extraList.Count; i++)
+                    {
+                        var position = gameManager.SendToBoxLine(extraList[i]);
+                        extraList[i].MoveTo(position);
+                    }
+                    extraList.Clear();
+                    extraCounter = counter;
                 }
             }
         }
@@ -66,11 +99,23 @@ namespace Main.Scripts.Entity
                 Debug.Log($"RedFlag end game!");
                 return Vector3.zero;
             }
-            
-            var currentAvailableSlot = waitPositions[counter];
-            waitList.Add(hex);
-            counter++;
-            if (counter >= waitPositions.Length)
+
+            var index = isReserveMode ? extraCounter : counter;
+            var currentAvailableSlot = waitPositions[index];
+            if (isReserveMode)
+            {
+                extraList.Add(hex);
+                extraCounter++;
+            }
+            else
+            {
+                waitList.Add(hex);
+                counter++;
+            }
+
+            Debug.Log($"RedFlagX add hex!");
+
+            if (extraCounter >= waitPositions.Length || counter >= waitPositions.Length)
             {
                 Debug.Log($"RedFlag game lose");
                 GameObject.FindObjectOfType<UIManager>().ShowLoseGame();

@@ -10,13 +10,6 @@ namespace Main.Scripts.State
         [SerializeField] private BoxLine boxLine;
 
         private WaitingArea waitingArea;
-        
-
-        public void InitializeColor(GameManager manager, IEnumerable<HexColor> list)
-        {
-            waitingArea = new WaitingArea();
-            boxLine.Initialize(manager, waitingArea, list);
-        }
 
         /// <summary>
         /// Process A hexagon moving

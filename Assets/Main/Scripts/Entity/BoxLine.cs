@@ -16,9 +16,11 @@ namespace Main.Scripts.Entity
         
         private GameManager gameManager;
         private WaitingArea waitingArea;
-        
-        public bool IsTransitionBox { get; private set; }
-        
+
+        public int cachedColorCounter = 0;
+
+        [field : SerializeField] public bool IsTransitionBox { get; private set; }
+
         public HexColor CurrentColor
         {
             get
@@ -28,7 +30,7 @@ namespace Main.Scripts.Entity
                     return HexColor.None;
                 }
 
-                return colors[counter];
+                return colors[cachedColorCounter];
             }
         }
 
@@ -44,8 +46,10 @@ namespace Main.Scripts.Entity
         /// <param name="list"></param>
         public void Initialize(GameManager manager, WaitingArea area, IEnumerable<HexColor> list)
         {
+            
             IsTransitionBox = false;
             counter         = 0;
+            cachedColorCounter = 0;
             gameManager     = manager;
             waitingArea     = area;
             // Set up color data
@@ -99,16 +103,18 @@ namespace Main.Scripts.Entity
         private void PlayBoxTransition()
         {
             IsTransitionBox = true;
+            waitingArea.MarkColorChange();
             gameManager.DelayExecute(() =>
             {
                 UpdateLinePosition(() =>
                 {
+                    cachedColorCounter += 3;
                     IsTransitionBox = false;
                     Debug.Log("XXX Transition false!");
                 }, () =>
                 {
-                    waitingArea.OnGameColorChanged(CurrentColor);
-                    Debug.Log("XXX On Game Color Changed!");
+                    waitingArea.OnGameColorChanged(colors, counter);
+                    
                 });
                 
             },GameConstant.BOX_DELAY_TIME);
@@ -124,7 +130,7 @@ namespace Main.Scripts.Entity
             }
 
             sequence.AppendCallback(() => callback?.Invoke());
-            sequence.AppendInterval(0.1f);
+            //sequence.AppendInterval(0.1f);
 
             sequence.OnComplete(() => onComplete?.Invoke());
         }

@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using DG.Tweening;
 using Main.Scripts.State;
 using Main.Scripts.Utils;
@@ -148,22 +149,41 @@ namespace Main.Scripts.Entity
             this.DelayExecute(() => GetTargetPosition(fromWaitLine), 0.1f);
         }
 
+        private IEnumerator GetToBox(bool fromWaitLine)
+        {
+            var target = gameManager.RequestLanding(this, fromWaitLine);
+            yield return new WaitUntil(() => state == EntityState.MoveDone);
+
+            const float duration = 1f;
+            Move(target, duration, () =>
+            {
+                if (parentBox != null)
+                {
+                    transform.SetParentAndReset(parentBox);
+                }
+
+                state = EntityState.MoveDone;
+            });
+        }
+
         /// <summary>
         /// If hexagon is moving and call this function again, that mean it called from waitLine.
         /// </summary>
-        private void GetTargetPosition(bool fromWaitLine = false)
+        public void GetTargetPosition(bool fromWaitLine = false)
         {
-            if (state == EntityState.AtDestination) return;
-
             if (state == EntityState.Moving)
             {
-                var isMoveToWaitLine = parentBox == null;
-                isMoveFromWaitLine = isMoveToWaitLine;
+                StartCoroutine(GetToBox(fromWaitLine));
                 return;
             }
 
-            state = EntityState.Moving;
             var target = gameManager.RequestLanding(this, fromWaitLine);
+            MoveTo(target);
+        }
+
+        public void MoveTo(Vector3 target)
+        {
+            state = EntityState.Moving;
             Debug.Log($"RedFlag {grid} move to {target}");
 
             const float duration = 1f;
@@ -172,13 +192,9 @@ namespace Main.Scripts.Entity
                 if (parentBox != null)
                 {
                     transform.SetParentAndReset(parentBox);
-                    state = EntityState.AtDestination;
                 }
-                else
-                {
-                    state = EntityState.MoveDone;
-                }
-                
+
+                state = EntityState.MoveDone;
             });
         }
 
@@ -196,17 +212,6 @@ namespace Main.Scripts.Entity
             sequence.OnComplete(() => onComplete?.Invoke());
 
             sequence.Play();
-        }
-
-        private void Update()
-        {
-            if (isMoveFromWaitLine && state == EntityState.MoveDone && gameManager.IsBoxSlotStable)
-            {
-                // Request to move again!
-                isMoveFromWaitLine = false;
-                state = EntityState.Stable;
-                GetTargetPosition(fromWaitLine: true);
-            }
         }
 
 #if UNITY_EDITOR
