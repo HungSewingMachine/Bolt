@@ -19,6 +19,8 @@ namespace Main.Scripts
 
     public class GameManager : MonoBehaviour
     {
+        public static int level = 0;
+        
         public HexColor[] sampleColors;
 
         [SerializeField] private GameData    gameData;
@@ -31,7 +33,7 @@ namespace Main.Scripts
 
         private void Start()
         {
-            var saveData = JsonHandler.GetLevelData(fileName);
+            var saveData = JsonHandler.GetLevelData($"Level{level}");
             if (allowSpawn) mapGenerator.Generate(saveData.gridIndex, saveData.offset);
 
             hexagons = FindObjectsOfType<Hexagon>();
@@ -129,6 +131,12 @@ namespace Main.Scripts
 
         public void ReloadGame()
         {
+            SceneManager.LoadScene(0);
+        }
+
+        public void LoadNextGame()
+        {
+            level += (level + 1) % 5;
             SceneManager.LoadScene(0);
         }
 

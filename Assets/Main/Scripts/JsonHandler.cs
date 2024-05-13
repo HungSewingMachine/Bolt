@@ -9,7 +9,8 @@ namespace Main.Scripts
         {
             var result = new SavedData();
             string directoryPath = Application.dataPath + "/SavedData";
-            string filePath = directoryPath + $"/{fileName}.json";
+            
+            string filePath = Path.Combine(Application.dataPath, "SavedData", $"{fileName}.json");
             
             // Check if the file exists
             if (File.Exists(filePath))
