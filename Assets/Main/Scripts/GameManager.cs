@@ -23,8 +23,7 @@ namespace Main.Scripts
         public HexColor[] sampleColors;
         
         [SerializeField] private MapGenerator mapGenerator;
-
-        public string fileName = "Level3";
+        
         public bool   allowSpawn = true;
 
         private Hexagon[] hexagons;
@@ -149,7 +148,7 @@ namespace Main.Scripts
                 if (list[i].ElementColor == currentColor)
                 {
                     var position = SendToBoxLine(list[i]);
-                    list[i].MoveTo(position);
+                    list[i].MoveTo(position,Hexagon.AnimationType.Jump);
                     listMove.Add(list[i]);
                     Debug.Log($"RedFlag XXX {smallestSlotIndex} {i}");
                     if (smallestSlotIndex > i) smallestSlotIndex = i;

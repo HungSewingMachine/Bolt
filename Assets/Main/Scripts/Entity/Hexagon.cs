@@ -11,11 +11,16 @@ namespace Main.Scripts.Entity
         Stable,
         Moving,
         MoveDone,
-        AtDestination,
     }
 
     public class Hexagon : MonoBehaviour
     {
+        public enum AnimationType
+        {
+            Move,
+            Jump,
+        }
+        
         public EntityState state;
         //private bool canAddToBoxLine = false;
         private bool isMoveFromWaitLine;
@@ -59,14 +64,6 @@ namespace Main.Scripts.Entity
         private Vector3 GetStartOriginPoint(Transform t)
         {
             return t.position;
-        }
-
-        private void TurnOffCollider()
-        {
-            foreach (var c in colliders)
-            {
-                c.enabled = false;
-            }
         }
 
         public void CheckMovable()
@@ -197,17 +194,17 @@ namespace Main.Scripts.Entity
 
             if (gameManager.RequestLanding(this, out var target))
             {
-                MoveTo(target);
+                MoveTo(target, AnimationType.Jump);
             }
         }
 
-        public void MoveTo(Vector3 target)
+        public void MoveTo(Vector3 target, AnimationType type = AnimationType.Move)
         {
             state = EntityState.Moving;
             Debug.Log($"RedFlag {grid} move to {target}");
 
             const float duration = 1f;
-            Move(target, duration, () =>
+            PlayAnimation(type, target, duration, () =>
             {
                 if (parentBox != null)
                 {
@@ -218,17 +215,18 @@ namespace Main.Scripts.Entity
                 state = EntityState.MoveDone;
             });
         }
-
-        /// <summary>
-        /// Play move and rotate object to destination value
-        /// </summary>
-        /// <param name="target"></param>
-        /// <param name="duration"></param>
-        /// <param name="onComplete"></param>
-        private void Move(Vector3 target, float duration, Action onComplete = null)
+        
+        private void PlayAnimation(AnimationType type ,Vector3 target, float duration, Action onComplete = null)
         {
             var sequence = DOTween.Sequence();
-            sequence.Append(transform.DOMove(target, duration));
+            if (type == AnimationType.Move)
+            {
+                sequence.Append(transform.DOMove(target, duration));
+            }
+            else
+            {
+                sequence.Append(transform.DOJump(target, 1,1, duration));
+            }
             sequence.Join(transform.DOLocalRotate(new Vector3(0, 360, 0), duration, RotateMode.FastBeyond360));
             sequence.OnComplete(() => onComplete?.Invoke());
 

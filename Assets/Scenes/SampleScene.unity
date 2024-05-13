@@ -426,7 +426,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sampleColors: 00000000010000000200000003000000
   mapGenerator: {fileID: 783180078}
-  fileName: Level0
   allowSpawn: 1
   boxLine:
     boxPrefab: {fileID: 1913115436190020190, guid: b1fec43efd27a714db741647def4df87, type: 3}
