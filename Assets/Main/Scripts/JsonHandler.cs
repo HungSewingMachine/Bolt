@@ -8,9 +8,8 @@ namespace Main.Scripts
         public static SavedData GetLevelData(string fileName)
         {
             var result = new SavedData();
-            string directoryPath = Application.dataPath + "/SavedData";
             
-            string filePath = Path.Combine(Application.dataPath, "SavedData", $"{fileName}.json");
+            string filePath = Path.Combine(Application.dataPath, "Resources", $"{fileName}.json");
             
             // Check if the file exists
             if (File.Exists(filePath))
@@ -34,7 +33,7 @@ namespace Main.Scripts
         public static void WriteAsset(SavedData data, string fileName)
         {
             string jsonString = JsonUtility.ToJson(data);
-            string directoryPath = Application.dataPath + "/SavedData";
+            string directoryPath = Path.Combine(Application.dataPath , "Resources");
 
             // Create the directory if it doesn't exist
             if (!Directory.Exists(directoryPath))
@@ -43,7 +42,7 @@ namespace Main.Scripts
             }
         
             // Construct the file path
-            string filePath = directoryPath + $"/{fileName}.json";
+            string filePath = Path.Combine(directoryPath, $"{fileName}.json");
             File.WriteAllText(filePath, jsonString);
             Debug.Log("JSON file saved to: " + filePath);
         }

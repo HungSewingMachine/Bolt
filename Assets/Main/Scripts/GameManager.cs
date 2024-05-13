@@ -33,7 +33,10 @@ namespace Main.Scripts
 
         private void Start()
         {
-            var saveData = JsonHandler.GetLevelData($"Level{level}");
+            Application.targetFrameRate = 60;
+            // var saveData = JsonHandler.GetLevelData($"Level{level}");
+            var data = Resources.Load($"Level{level}") as TextAsset;
+            var saveData = JsonUtility.FromJson<SavedData>(data.text);
             if (allowSpawn) mapGenerator.Generate(saveData.gridIndex, saveData.offset);
 
             hexagons = FindObjectsOfType<Hexagon>();
