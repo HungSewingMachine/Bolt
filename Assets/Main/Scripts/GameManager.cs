@@ -106,7 +106,7 @@ namespace Main.Scripts
             
             InitializeColor(this,colors);
 
-            colors.ShuffleNElements(9, 3 + 1);
+            colors.ShuffleNElements(9, 5);
             var increasingLayerList = objects.OrderBy(hex => hex.Coordinate.y).ToList();
             
             for (int i = 0; i < objects.Length; i++)
