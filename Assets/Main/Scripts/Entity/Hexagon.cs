@@ -1,7 +1,6 @@
 using System;
 using System.Linq;
 using DG.Tweening;
-using Main.Scripts.State;
 using Main.Scripts.Utils;
 using UnityEngine;
 
@@ -20,8 +19,6 @@ namespace Main.Scripts.Entity
         public EntityState state;
         //private bool canAddToBoxLine = false;
         private bool isMoveFromWaitLine;
-
-        [SerializeField] private GameData gameData;
 
         // === Only Test change color
         public Renderer[] renderers;
@@ -198,8 +195,10 @@ namespace Main.Scripts.Entity
                 return;
             }
 
-            var target = gameManager.RequestLanding(this);
-            MoveTo(target);
+            if (gameManager.RequestLanding(this, out var target))
+            {
+                MoveTo(target);
+            }
         }
 
         public void MoveTo(Vector3 target)

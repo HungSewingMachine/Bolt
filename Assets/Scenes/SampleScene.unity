@@ -425,23 +425,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sampleColors: 00000000010000000200000003000000
-  gameData: {fileID: 11400000, guid: 0dee7e2ad7e5e8e4da51c835b1104dd4, type: 2}
   mapGenerator: {fileID: 783180078}
   fileName: Level0
   allowSpawn: 1
   boxLine:
     boxPrefab: {fileID: 1913115436190020190, guid: b1fec43efd27a714db741647def4df87, type: 3}
-    boxList: []
-    cachedColorCounter: 0
     boxCounter: 0
     <IsTransitionBox>k__BackingField: 0
   waitingArea:
     waitPositions: []
     counter: 0
     waitList: []
-    isProcessing: 0
-    extraCounter: 0
-    extraList: []
 --- !u!4 &149298816
 Transform:
   m_ObjectHideFlags: 0
@@ -470,7 +464,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mainCamera: {fileID: 963194227}
-  cooldownBetweenClick: 0.3
+  cooldownBetweenClick: 0.1
 --- !u!4 &245483383 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6621917254669801451, guid: 8f0d9437a6e34a448a7016c25629ee01, type: 3}

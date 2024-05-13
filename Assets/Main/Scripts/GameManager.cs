@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Main.Scripts.Entity;
-using Main.Scripts.State;
 using Main.Scripts.Utils;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -22,8 +21,7 @@ namespace Main.Scripts
         public static int level = 0;
         
         public HexColor[] sampleColors;
-
-        [SerializeField] private GameData    gameData;
+        
         [SerializeField] private MapGenerator mapGenerator;
 
         public string fileName = "Level3";
@@ -122,14 +120,15 @@ namespace Main.Scripts
         /// </summary>
         /// <param name="hex"></param>
         /// <returns>position which the hexagon move to</returns>
-        public Vector3 RequestLanding(Hexagon hex)
+        public bool RequestLanding(Hexagon hex, out Vector3 target)
         {
-            if (!waitingArea.isProcessing && (IsBoxSlotStable && boxLine.CurrentBox.HasAvailableSlot && IsColorMatch(hex.ElementColor)))
+            if (IsBoxSlotStable && boxLine.CurrentBox.HasAvailableSlot && IsColorMatch(hex.ElementColor))
             {
-                return SendToBoxLine(hex);
+                target = SendToBoxLine(hex);
+                return true;
             }
 
-            return waitingArea.AddWrongColorObject(hex);
+            return waitingArea.AddWrongColorObject(hex, out target);
         }
 
         public Vector3 SendToBoxLine(Hexagon hex)

@@ -32,19 +32,12 @@ namespace Main.Scripts.Entity
             gameManager = manager;
         }
 
-        public void MarkColorChange()
-        {
-            extraCounter = counter;
-            isProcessing = true;
-        }
-
         /// <summary>
         /// Loop through the list, free hexagon that have the same color, rearrange list.
         /// </summary>
         /// <param name="c"></param>
         public void OnGameColorChanged(Box currentBox)
         {
-            MarkColorChange();
             Debug.Log("XXX On Game Color Changed!");
 
             if (!currentBox.HasAvailableSlot) return;
@@ -72,34 +65,20 @@ namespace Main.Scripts.Entity
 
                 gameManager.FreeWaitLine(currentBox, newList, waitPositions, waitList, ref counter);
             }
-
-            isProcessing = false;
         }
 
-        public bool isProcessing;
-        public int extraCounter;
-        public List<Hexagon> extraList = new List<Hexagon>();
-
-        public Vector3 AddWrongColorObject(Hexagon hex)
+        public bool AddWrongColorObject(Hexagon hex, out Vector3 position)
         {
             if (counter >= waitPositions.Length)
             {
-                Debug.Log($"RedFlag end game!");
-                return Vector3.zero;
+                position = Vector3.zero;
+                return false;
             }
 
-            var index = isProcessing ? extraCounter : counter;
+            var index = counter;
             var currentAvailableSlot = waitPositions[index];
-            if (isProcessing)
-            {
-                extraList.Add(hex);
-                extraCounter++;
-            }
-            else
-            {
-                waitList.Add(hex);
-                counter++;
-            }
+            waitList.Add(hex);
+            counter++;
 
             Debug.Log($"RedFlagX add hex!");
 
@@ -107,7 +86,8 @@ namespace Main.Scripts.Entity
             {
                 gameManager.CheckResult();
             }
-            return currentAvailableSlot;
+            position = currentAvailableSlot;
+            return true;
         }
 
         public bool IsFullElement => counter >= waitPositions.Length;
