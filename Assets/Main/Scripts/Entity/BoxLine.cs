@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using DG.Tweening;
 using Main.Scripts.Utils;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace Main.Scripts.Entity
 {
@@ -10,22 +11,20 @@ namespace Main.Scripts.Entity
     public class Box
     {
         public Transform boxTransform;
-        public HexColor color;
-        public int index = 0;
-        public int actualIndex = 0;
-
-        private const float BOX_Y_POSITION = 0f;
-        private const float BOX_Z_POSITION = 10f;
+        public HexColor  color;
+        public int       index       = 0;
+        public int       actualIndex = 0;
 
         private BoxLine boxLine;
 
-        public Box(Transform t, HexColor c, BoxLine line) 
+        public Box(Transform t, HexColor c, BoxLine line)
         {
-            index = 0;
+            index        = 0;
             boxTransform = t;
-            color = c;
-            boxLine = line;
+            color        = c;
+            boxLine      = line;
         }
+
         public bool HasAvailableSlot => index < 3;
 
         /// <summary>
@@ -34,7 +33,10 @@ namespace Main.Scripts.Entity
         /// <returns></returns>
         public Vector3 GetSlotPosition()
         {
-            var position = new Vector3(index, BOX_Y_POSITION, BOX_Z_POSITION);
+            var xPos = index + GameConstant.BOX_START_POSITION - 2 * GameConstant.X;
+            const float yPos = GameConstant.BOX_Y_POSITION + GameConstant.SLOT_OFFSET_HEIGHT;
+            const float zPos = GameConstant.BOX_Z_POSITION;
+            var position = new Vector3(xPos, yPos, zPos);
             index++;
             return position;
         }
@@ -58,38 +60,36 @@ namespace Main.Scripts.Entity
     [Serializable]
     public class BoxLine
     {
-        [SerializeField] private Transform       boxPrefab;
+        [SerializeField] private Transform boxPrefab;
 
         [SerializeField] private List<Box> boxList;
-        
+
         private GameManager gameManager;
         private WaitingArea waitingArea;
 
         public int cachedColorCounter = 0;
-        public int boxCounter = 0;
+        public int boxCounter         = 0;
 
         public Box CurrentBox => boxList[boxCounter];
 
-        [field : SerializeField] public bool IsTransitionBox { get; private set; }
+        [field: SerializeField] public bool IsTransitionBox { get; private set; }
 
         public HexColor CurrentColor => CurrentBox.color;
-
-        private const float BOX_Y_POSITION = 0f;
-        private const float BOX_Z_POSITION = 10f;
 
         /// <summary>
         /// Get the list we use to set up from floor to ceil.
         /// We reverse it so that we can utilize counter variable to travel from ceil to floor.
         /// </summary>
+        /// <param name="area"></param>
         /// <param name="list"></param>
+        /// <param name="manager"></param>
         public void Initialize(GameManager manager, WaitingArea area, IEnumerable<HexColor> list)
         {
-            
-            IsTransitionBox = false;
+            IsTransitionBox    = false;
             boxCounter         = 0;
             cachedColorCounter = 0;
-            gameManager     = manager;
-            waitingArea     = area;
+            gameManager        = manager;
+            waitingArea        = area;
             // Set up color data
             var listColor = new List<HexColor>(list);
             listColor.Reverse();
@@ -99,10 +99,11 @@ namespace Main.Scripts.Entity
             boxList = new List<Box>();
             for (int i = 0; i < numberOfBox; i++)
             {
-                var box = GameObject.Instantiate(boxPrefab, new Vector3(1 - i * GameConstant.DISTANCE_BETWEEN_BOX, BOX_Y_POSITION, BOX_Z_POSITION),
+                var boxXPosition = GameConstant.BOX_START_POSITION - i * GameConstant.DISTANCE_BETWEEN_BOX;
+                var box = Object.Instantiate(boxPrefab, new Vector3(boxXPosition, GameConstant.BOX_Y_POSITION, GameConstant.BOX_Z_POSITION),
                     Quaternion.identity);
                 var c = listColor[i * GameConstant.BOX_CAPACITY];
-                boxList.Add(new Box(box, c, this)); 
+                boxList.Add(new Box(box, c, this));
                 var renderer = box.GetComponent<Renderer>();
                 GameUtils.ColorObject(renderer, c);
             }
@@ -134,14 +135,14 @@ namespace Main.Scripts.Entity
                     {
                         GameObject.FindObjectOfType<UIManager>().ShowWinGame();
                     }
+
                     // cachedColorCounter += 3;
                     IsTransitionBox = false;
                     Debug.Log("XXX IsTransition false!");
 
                     waitingArea.OnGameColorChanged(CurrentBox);
                 });
-                
-            },GameConstant.BOX_DELAY_TIME);
+            }, GameConstant.BOX_DELAY_TIME);
         }
 
         public void UpdateLinePosition(Action onComplete = null, Action callback = null)

@@ -13,11 +13,11 @@ namespace Main.Scripts.Entity
         public Vector3[] waitPositions = new Vector3[6]
         {
             new Vector3(0,0,7),
-            new Vector3(2,0,7),
-            new Vector3(4,0,7),
-            new Vector3(6,0,7),
+            new Vector3(1.6f,0,7),
+            new Vector3(3.2f,0,7),
+            new Vector3(4.8f,0,7),
+            new Vector3(6.4f,0,7),
             new Vector3(8,0,7),
-            new Vector3(10,0,7),
         };
 
         public int counter = 0;

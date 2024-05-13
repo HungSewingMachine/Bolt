@@ -27,7 +27,7 @@ namespace Main.Scripts
         public static Vector3 GetPosition(Grid grid, Vector3 offset)
         {
             var offsetX = Mathf.Approximately(grid.z % 2, 1) ? GameConstant.X : 0;
-            return new Vector3(grid.x * GameConstant.X + offsetX, grid.y * GameConstant.Y, grid.z * GameConstant.Z) + offset;
+            return new Vector3(grid.x * GameConstant.X + offsetX, grid.y * GameConstant.Y_BUILD, grid.z * GameConstant.Z) + offset;
         }
     }
 }

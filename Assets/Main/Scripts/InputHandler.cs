@@ -10,8 +10,6 @@ namespace Main.Scripts
         public float cooldownBetweenClick = 0.5f;
         
         private float timer = 0;
-
-        [SerializeField] private Transform movePosition;
         
         private void Update()
         {
