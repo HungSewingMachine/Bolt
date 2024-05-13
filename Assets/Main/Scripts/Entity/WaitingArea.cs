@@ -110,6 +110,6 @@ namespace Main.Scripts.Entity
             return currentAvailableSlot;
         }
 
-        public bool IsFullElement => extraCounter >= waitPositions.Length || counter >= waitPositions.Length;
+        public bool IsFullElement => counter >= waitPositions.Length;
     }
 }

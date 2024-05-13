@@ -45,45 +45,6 @@ namespace Main.Scripts
             ColorObject(hexagons);
         }
 
-        private bool check;
-        private void Update()
-        {
-            if (!waitingArea.isProcessing)
-            {
-                check = true;
-            }
-
-            if (check && !boxLine.IsTransitionBox)
-            {
-                //if (!boxLine.CurrentBox.HasAvailableSlot)
-
-                var list = waitingArea.extraList;
-                // Normally extraList is empty so it end here
-
-                // Neu con slot thi add nhung phan tu co the vao, con lai dua ve wait list
-                if (list.Count != 0)
-                {
-                    for (int i = 0; i < list.Count; i++)
-                    {
-                        if (boxLine.CurrentBox.HasAvailableSlot && IsColorMatch(list[i].ElementColor))
-                        {
-                            var position = SendToBoxLine(list[i]);
-                            list[i].MoveTo(position);
-                        }
-                        else
-                        {
-                            waitingArea.waitList.Add(list[i]);
-                            list[i].MoveTo(waitingArea.waitPositions[waitingArea.counter]);
-                            waitingArea.counter++;
-                        }
-
-                    }
-                    list.Clear();
-                    waitingArea.extraCounter = waitingArea.counter;
-                }
-            }
-        }
-
         public void CheckPossibleMove()
         {
             Debug.Log($"RedFlag check possible move!");
