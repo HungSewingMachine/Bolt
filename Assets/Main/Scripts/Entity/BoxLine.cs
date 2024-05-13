@@ -62,15 +62,21 @@ namespace Main.Scripts.Entity
     {
         [SerializeField] private Transform boxPrefab;
 
-        [SerializeField] private List<Box> boxList;
+        private List<Box> boxList;
 
         private GameManager gameManager;
         private WaitingArea waitingArea;
-
-        public int cachedColorCounter = 0;
+        
         public int boxCounter         = 0;
 
         public Box CurrentBox => boxList[boxCounter];
+
+        public HexColor GetNextColor()
+        {
+            if (boxCounter + 1 >= boxList.Count) return HexColor.None;
+
+            return boxList[boxCounter + 1].color;
+        }
 
         [field: SerializeField] public bool IsTransitionBox { get; private set; }
 
@@ -87,7 +93,6 @@ namespace Main.Scripts.Entity
         {
             IsTransitionBox    = false;
             boxCounter         = 0;
-            cachedColorCounter = 0;
             gameManager        = manager;
             waitingArea        = area;
             // Set up color data
@@ -129,14 +134,12 @@ namespace Main.Scripts.Entity
             {
                 UpdateLinePosition(() =>
                 {
-                    // OnComplete
                     boxCounter += 1;
                     if (boxCounter >= boxList.Count)
                     {
-                        GameObject.FindObjectOfType<UIManager>().ShowWinGame();
+                        Object.FindObjectOfType<UIManager>().ShowWinGame();
                     }
-
-                    // cachedColorCounter += 3;
+                    
                     IsTransitionBox = false;
                     Debug.Log("XXX IsTransition false!");
 
@@ -145,7 +148,7 @@ namespace Main.Scripts.Entity
             }, GameConstant.BOX_DELAY_TIME);
         }
 
-        public void UpdateLinePosition(Action onComplete = null, Action callback = null)
+        public void UpdateLinePosition(Action onComplete = null)
         {
             // Move the line
             var sequence = DOTween.Sequence();
@@ -154,9 +157,6 @@ namespace Main.Scripts.Entity
                 var t = box.boxTransform;
                 sequence.Join(t.DOMove(t.WithXShift(GameConstant.DISTANCE_BETWEEN_BOX), GameConstant.BOX_MOVE_DURATION));
             }
-
-            sequence.AppendCallback(() => callback?.Invoke());
-            //sequence.AppendInterval(0.1f);
 
             sequence.OnComplete(() => onComplete?.Invoke());
         }

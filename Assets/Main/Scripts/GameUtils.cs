@@ -1,12 +1,18 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using Main.Scripts.Entity;
 using UnityEngine;
 
 namespace Main.Scripts
 {
     public static class GameUtils
     {
+        public static Hexagon GetComponentFromCollider(Collider c)
+        {
+            return c.GetComponentInParent<Hexagon>();
+        }
+        
         private static readonly int ColorField = Shader.PropertyToID("_Color");
         
         public static void ColorObject(Renderer r, HexColor color)

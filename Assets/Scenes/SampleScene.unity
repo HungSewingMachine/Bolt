@@ -469,7 +469,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 94a5be03450741bea8bfdcb83df8db8f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cooldownBetweenClick: 0.1
+  mainCamera: {fileID: 963194227}
+  cooldownBetweenClick: 0.3
 --- !u!4 &245483383 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6621917254669801451, guid: 8f0d9437a6e34a448a7016c25629ee01, type: 3}

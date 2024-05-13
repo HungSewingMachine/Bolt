@@ -161,10 +161,8 @@ namespace Main.Scripts
         /// </summary>
         /// <param name="hex"></param>
         /// <returns>position which the hexagon move to</returns>
-        public Vector3 RequestLanding(Hexagon hex, bool fromWaitLine)
+        public Vector3 RequestLanding(Hexagon hex)
         {
-            CheckPossibleMove();
-
             if (!waitingArea.isProcessing && (IsBoxSlotStable && boxLine.CurrentBox.HasAvailableSlot && IsColorMatch(hex.ElementColor)))
             {
                 return SendToBoxLine(hex);
@@ -216,5 +214,35 @@ namespace Main.Scripts
         }
 
         public bool IsBoxSlotStable => !boxLine.IsTransitionBox;
+
+        public void CheckResult()
+        {
+            if (boxLine.CurrentBox.HasAvailableSlot)
+            {
+                ShowEndGame();
+            }
+            else
+            {
+                var nextColor = boxLine.GetNextColor();
+                if (nextColor != HexColor.None)
+                {
+                    for (int i = 0; i < waitingArea.waitList.Count; i++)
+                    {
+                        if (waitingArea.waitList[i].ElementColor == nextColor)
+                        {
+                            return;
+                        }
+                    }
+                }
+                
+                ShowEndGame();
+            }
+        }
+
+        private void ShowEndGame()
+        {
+            Debug.Log($"RedFlag game lose");
+            FindObjectOfType<UIManager>().ShowLoseGame();
+        }
     }
 }

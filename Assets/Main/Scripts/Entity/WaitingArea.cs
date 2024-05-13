@@ -103,12 +103,13 @@ namespace Main.Scripts.Entity
 
             Debug.Log($"RedFlagX add hex!");
 
-            if (extraCounter >= waitPositions.Length || counter >= waitPositions.Length)
+            if (IsFullElement)
             {
-                Debug.Log($"RedFlag game lose");
-                GameObject.FindObjectOfType<UIManager>().ShowLoseGame();
+                gameManager.CheckResult();
             }
             return currentAvailableSlot;
         }
+
+        public bool IsFullElement => extraCounter >= waitPositions.Length || counter >= waitPositions.Length;
     }
 }

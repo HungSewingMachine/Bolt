@@ -1,5 +1,5 @@
 using System;
-using System.Collections;
+using System.Linq;
 using DG.Tweening;
 using Main.Scripts.State;
 using Main.Scripts.Utils;
@@ -38,8 +38,9 @@ namespace Main.Scripts.Entity
         public float radius  = 0.58f - 0.08f;
         public bool  canMove = false;
 
-        private Box parentBox;
+        private Box         parentBox;
         private GameManager gameManager;
+        private Transform   myTransform;
 
         private const float UNIT_ANGLE         = Mathf.PI / 3;
         private const float MAX_CHECK_DISTANCE = 0.2f;
@@ -78,12 +79,9 @@ namespace Main.Scripts.Entity
 
             foreach (var angle in Angles)
             {
-                var checkPoint = GetPositionFromAngle(transform, angle - Mathf.PI / 6);
-                // Debug.Log($"RedFlag check point {checkPoint}!");
-                if (Physics.Raycast(checkPoint, Vector3.up, 10, HEXAGON_LAYER))
+                if (RayCastAtVertex(Vector3.up, angle, out _))
                 {
                     canMove = false;
-                    LogCanNotMove();
                     return;
                 }
             }
@@ -97,11 +95,6 @@ namespace Main.Scripts.Entity
         {
             var origin = GetStartOriginPoint(t);
             return new Vector3(origin.x + radius * Mathf.Cos(angle), origin.y, origin.z + radius * Mathf.Sin(angle));
-        }
-
-        protected virtual void LogCanNotMove()
-        {
-            //Debug.Log($"RedFlag Detect False");
         }
 
         public void ChangeColor(HexColor color)
@@ -131,35 +124,81 @@ namespace Main.Scripts.Entity
 
         public void Initialize(Grid grid, GameManager manager)
         {
-            this.grid  = grid;
-            Coordinate = grid;
+            this.grid   = grid;
+            Coordinate  = grid;
             gameManager = manager;
-            state = EntityState.Stable;
+            state       = EntityState.Stable;
+            myTransform = transform;
         }
 
         /// <summary>
         /// Wait so that collider if turn off, then request GameManager a position and recalculate possible move.
         /// </summary>
-        public void FindTargetThenMove(bool fromWaitLine = false)
+        public void FindTargetThenMove()
         {
             if (!canMove) return;
 
-            TurnOffCollider();
-            this.DelayExecute(() => GetTargetPosition(fromWaitLine), 0.1f);
+            //TurnOffCollider();
+            RecalculateMovable();
+            
+            GetTargetPosition();
+        }
+
+        private void RecalculateMovable()
+        {
+            foreach (var angle in Angles)
+            {
+                if (RayCastAtVertex(Vector3.down, angle, out var hit))
+                {
+                    var hex = GameUtils.GetComponentFromCollider(hit.collider);
+                    hex.CheckMovableExcept(colliders);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Special method for checking 6 vertices of hexagon by passing angle 0, 60, 120, ...
+        /// </summary>
+        /// <param name="direction"></param>
+        /// <param name="angle"></param>
+        /// <param name="hit"></param>
+        /// <returns></returns>
+        private bool RayCastAtVertex(Vector3 direction, float angle, out RaycastHit hit)
+        {
+            var checkPoint = GetPositionFromAngle(myTransform, angle - Mathf.PI / 6);
+            return Physics.Raycast(checkPoint, direction, out hit, 10, HEXAGON_LAYER);
+        }
+
+        public void CheckMovableExcept(Collider[] exceptionCols)
+        {
+            if (canMove) return;
+            
+            foreach (var angle in Angles)
+            {
+                if (RayCastAtVertex(Vector3.up, angle, out var hit))
+                {
+                    if (exceptionCols.Contains(hit.collider))
+                        continue;
+                    
+                    canMove = false;
+                    return;
+                }
+            }
+
+            canMove = true;
         }
 
         /// <summary>
         /// If hexagon is moving and call this function again, that mean it called from waitLine.
         /// </summary>
-        public void GetTargetPosition(bool fromWaitLine = false)
+        public void GetTargetPosition()
         {
             if (state == EntityState.Moving)
             {
-                //StartCoroutine(GetToBox(fromWaitLine));
                 return;
             }
 
-            var target = gameManager.RequestLanding(this, fromWaitLine);
+            var target = gameManager.RequestLanding(this);
             MoveTo(target);
         }
 

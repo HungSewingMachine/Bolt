@@ -1,11 +1,12 @@
-﻿using Main.Scripts.Entity;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Main.Scripts
 {
     // TODO: need optimize somethings
     public class InputHandler : MonoBehaviour
     {
+        [SerializeField] private Camera mainCamera;
+        
         [Range(0.1f,2)]
         public float cooldownBetweenClick = 0.5f;
         
@@ -17,22 +18,23 @@ namespace Main.Scripts
             
             if (Input.GetMouseButton(0) && timer >= 0)
             {
-                SelectObject();
                 timer = -cooldownBetweenClick;
+                Debug.Log($"RedFlagX btn press!");
+                SelectObject();
             }
         }
         
         /// <summary>
         /// Select Character by cast a ray from screen to world position
         /// </summary>
-        private static void SelectObject()
+        private void SelectObject()
         {
             var screenPos = Input.mousePosition;
-            var ray = Camera.main.ScreenPointToRay(screenPos);
+            var ray = mainCamera.ScreenPointToRay(screenPos);
 
             if (Physics.Raycast(ray, out var hitInfo, 100, GameConstant.ENTITY_LAYER))
             {
-                var visualPassenger = hitInfo.collider.GetComponentInParent<Hexagon>();
+                var visualPassenger = GameUtils.GetComponentFromCollider(hitInfo.collider);
                 visualPassenger.FindTargetThenMove();
             }
         }
